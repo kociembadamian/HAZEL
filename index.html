@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO: the name and the acronym both belong in the title, followed by
+       what the tool actually does. Kept under ~60-65 characters of leading
+       content so it is not truncated in search results.
+
+       NOTE (2026-09-26, later): the title, description and Open Graph tags
+       below now lead with the ALOHA comparison, reversing the 2026-09-26
+       note this replaced. That earlier choice reasoned the comparison was
+       "useful context for someone already deciding between the two tools",
+       fine for a person, but backwards for how search actually works: a
+       page has to contain and lead with the term someone is likely to
+       search ("ALOHA alternative", "ALOHA open source") to ever surface for
+       it at all, before there is a "someone already deciding" to hand
+       context to. See how-to-use.html and about.html for the fuller
+       comparison and methodology-sourcing statement — this tag just needs
+       to get HAZEL found. -->
+  <title>HAZEL — open-source ALOHA alternative, chemical dispersion modelling</title>
+
+  <meta name="description" content="HAZEL is a free, open-source atmospheric dispersion model for evaluating releases of hazardous chemical vapours, including toxic gas clouds, fires, and explosions — built in Europe as an open alternative to NOAA's ALOHA, from the same published methodology. Runs entirely offline in your browser." />
+
+  <meta name="keywords" content="HAZEL, ALOHA alternative, ALOHA open source, atmospheric dispersion model, chemical dispersion modelling, threat zone, ADR, dangerous goods, hazmat, open source, DGSA" />
+  <!-- NOTE (2026-09-26): canonical domain moved again, from app.hazel-eu.org
+       to lab.hazel-project.eu — hazel-project.eu is HAZEL's newly
+       registered domain, hosting the project's own marketing site (built
+       separately, outside this codebase); lab.hazel-project.eu is this
+       running application.
+       NOTE (2026-10-03): the planned documentation site
+       (docs.hazel-project.eu) is on hold while HAZEL is in beta — the
+       sidebar link to it was removed, and About / How to use now show a
+       disabled "Full documentation" button explaining why.
+       NOTE (2026-10-05): the source code is public at
+       https://github.com/kociembadamian/HAZEL — linked from the sidebar
+       (Docs group) and from the structured data below. -->
+  <link rel="canonical" href="https://lab.hazel-project.eu/" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Social preview (Open Graph) — same wording as the meta description so
+       the message stays consistent wherever the link is shared. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://lab.hazel-project.eu/" />
+  <meta property="og:title" content="HAZEL — open-source ALOHA alternative, chemical dispersion modelling" />
+  <meta property="og:description" content="A free, open-source atmospheric dispersion model for hazardous chemical releases — toxic gas clouds, fires, and explosions — built as an open alternative to NOAA's ALOHA." />
+  <meta property="og:locale" content="en" />
+  <meta property="og:image" content="https://lab.hazel-project.eu/assets/hazel_logo.png" />
+
+  <!-- Structured data: what this page IS, in a form search engines can read
+       without executing any JavaScript. Deliberately modest — a
+       SoftwareApplication block plus its author, nothing more elaborate.
+       This alone does not make the page rank (see the note on
+       how-to-use.html and about.html about why those exist as their own
+       crawlable, static documents, which is the change that actually
+       matters for indexing); it just states plainly and accurately what
+       schema.org type of thing HAZEL is, for whatever does read it.
+       (2026-10-03: "sameAs" pointing at the not-yet-existing docs site
+       removed. 2026-10-05: codeRepository / sameAs now point at the public
+       GitHub repository.) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "HAZEL",
+    "alternateName": "Hazardous Atmosphere Zoning for European Locations",
+    "url": "https://lab.hazel-project.eu/",
+    "sameAs": ["https://github.com/kociembadamian/HAZEL"],
+    "codeRepository": "https://github.com/kociembadamian/HAZEL",
+    "applicationCategory": "SecurityApplication",
+    "operatingSystem": "Any (runs in a web browser; installable as a PWA on Windows, macOS, Linux, Android, iOS)",
+    "description": "Free, open-source atmospheric dispersion model for evaluating releases of hazardous chemical vapours, including toxic gas clouds, fires, and explosions. Built as a European, open-source alternative to NOAA's ALOHA, from the same published technical methodology.",
+    "isAccessibleForFree": true,
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+    "author": { "@type": "Person", "name": "Damian Kociemba" },
+    "softwareVersion": "1.0.0"
+  }
+  </script>
+
+  <!-- PWA: manifest plus a browser chrome colour matching the navigation bar -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#31738d" />
+
+  <!-- The favicon/PWA icon is HAZEL's own logo; apple-touch-icon is required
+       separately because iOS Safari does not use the icon link above for
+       "Add to Home Screen". -->
+  <link rel="icon" href="assets/hazel_logo.png" type="image/png" />
+  <link rel="apple-touch-icon" href="assets/hazel_logo.png" />
+
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+</head>
+<body>
+
+  <!-- Top bar shown ONLY on mobile (see layout.css) -->
+  <header class="app-topbar">
+    <button
+      class="app-topbar__hamburger"
+      aria-label="Open menu"
+      aria-expanded="false"
+      aria-controls="app-sidebar"
+    >☰</button>
+    <!-- NOTE (2026-09-27): the logo used to sit inline with "HAZEL" on the
+         left, which meant it had to be shrunk (height: 1.1em, tied to the
+         wordmark's own font size) just to leave room for the text next to
+         it. Moved to the right instead — it no longer shares a line with
+         anything, so it can be a real, fixed size (app-topbar__logo below)
+         rather than however big the text next to it allows. -->
+    <span class="app-topbar__brand">
+      <span class="app-topbar__brand-row">HAZEL</span>
+      <span class="app-topbar__brand-sub">Hazardous Atmosphere Zoning for European Locations</span>
+    </span>
+    <img src="assets/hazel_logo.png" alt="" aria-hidden="true" class="app-topbar__logo" />
+  </header>
+
+  <div class="app-shell" data-drawer="closed">
+
+    <!-- Dimming layer behind the drawer — mobile only, when open -->
+    <div class="app-sidebar-scrim"></div>
+
+    <nav class="app-sidebar" id="app-sidebar" aria-label="Main navigation">
+      <div class="app-sidebar__header">
+        <a class="app-sidebar__brand" href="#">
+          <span class="app-sidebar__brand-row">
+            <img src="assets/hazel_logo.png" alt="" aria-hidden="true" class="app-sidebar__brand-icon" />
+            HAZEL
+          </span>
+          <span class="app-sidebar__brand-sub">Hazardous Atmosphere Zoning for European Locations</span>
+        </a>
+        <!-- Mobile-only close button — the drawer already closes on a tap
+             outside it or on Escape (see appShell.js), but an explicit
+             button is easier to find for anyone not expecting that. -->
+        <button class="app-sidebar__close" aria-label="Close menu" type="button">✕</button>
+      </div>
+
+      <div class="app-sidebar__scroll">
+        <div class="app-sidebar__group">
+          <h2 class="app-sidebar__group-title">Workplace</h2>
+          <ul class="app-sidebar__nav">
+            <li><a class="app-sidebar__link" href="#" data-view="wizard" aria-current="page">New scenario</a></li>
+            <li><a class="app-sidebar__link" href="#" data-view="saved">Saved scenarios</a></li>
+            <li><a class="app-sidebar__link" href="#" data-view="library">Chemical library</a></li>
+          </ul>
+        </div>
+
+        <div class="app-sidebar__group">
+          <h2 class="app-sidebar__group-title">Docs</h2>
+          <ul class="app-sidebar__nav">
+            <!-- NOTE (2026-10-03): the "Full documentation ↗" link that used
+                 to be first here is gone — there is no documentation site
+                 while HAZEL is in beta. About and How to use now carry a
+                 disabled "Full documentation" button that says why. -->
+            <!-- href points at a real, standalone, crawlable page (see
+                 how-to-use.html and about.html) rather than "#" — JS still
+                 intercepts the click below for a same-page SPA transition
+                 when it's available (see pageRouter.js), but a search
+                 engine that does not run click handlers, and a person who
+                 middle-clicks to open in a new tab, both now land somewhere
+                 real instead of the app's own root. data-view is unchanged,
+                 so pageRouter.js's existing routing needs no changes. -->
+            <li><a class="app-sidebar__link" href="how-to-use.html" data-view="settings">How to use</a></li>
+            <li><a class="app-sidebar__link" href="about.html" data-view="about">About</a></li>
+            <!-- NOTE (2026-10-05): external link to the public source code.
+                 No data-view, so pageRouter.js leaves it alone (it only
+                 binds to [data-view] links); it opens in a new tab. -->
+            <li><a class="app-sidebar__link" href="https://github.com/kociembadamian/HAZEL" target="_blank" rel="noopener">Source code ↗</a></li>
+          </ul>
+        </div>
+
+        <div class="app-sidebar__group">
+          <h2 class="app-sidebar__group-title">Other tools</h2>
+          <div class="app-sidebar__tools">
+            <a href="https://app.kocie.mba" target="_blank" rel="noopener" class="tool-card">
+              <img src="https://app.kocie.mba/icon-logo-512.png" alt="" aria-hidden="true" class="tool-card__icon" />
+              <span class="tool-card__text">
+                <span class="tool-card__title">ADR Apka</span>
+                <span class="tool-card__desc">UN number lookup, exemption calculator, tunnel restrictions</span>
+                <span class="tool-card__link">app.kocie.mba ↗</span>
+              </span>
+            </a>
+            <a href="https://edi.kocie.mba" target="_blank" rel="noopener" class="tool-card">
+              <img src="https://edi.kocie.mba/icon-logo-512.png" alt="" aria-hidden="true" class="tool-card__icon" />
+              <span class="tool-card__text">
+                <span class="tool-card__title">ADR EDI</span>
+                <span class="tool-card__desc">Transport documents and annual dangerous-goods reports</span>
+                <span class="tool-card__note">Currently available in Polish only</span>
+                <span class="tool-card__link">edi.kocie.mba ↗</span>
+              </span>
+            </a>
+            <a href="https://tacho.kocie.mba" target="_blank" rel="noopener" class="tool-card">
+              <img src="https://tacho.kocie.mba/icon-logo-512.png" alt="" aria-hidden="true" class="tool-card__icon" />
+              <span class="tool-card__text">
+                <span class="tool-card__title">TACHO</span>
+                <span class="tool-card__desc">Driver working-time tracking based on EC 561/2006</span>
+                <span class="tool-card__link">tacho.kocie.mba ↗</span>
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="app-sidebar__footer">
+        <a class="app-sidebar__contact" href="mailto:damian@kocie.mba">
+          <span class="app-sidebar__contact-name">Damian Kociemba</span>
+          <span class="app-sidebar__contact-email">damian@kocie.mba</span>
+        </a>
+      </div>
+    </nav>
+
+    <main class="app-main">
+      <div class="wizard-container">
+        <h1>New scenario</h1>
+
+        <!-- Active step content — rendered by wizard.js -->
+        <div class="wizard-step-content"></div>
+
+        <!-- Wizard progress bar, floating and always visible (see
+             layout.css) — Back/Next now live INSIDE it rather than in the
+             page flow below the step content. They used to sit right after
+             the form, which meant scrolling to the bottom of a long step
+             (Weather, Source) just to move on; the progress bar was already
+             fixed and always on screen, so folding the buttons into it gets
+             navigation without a scroll for any step, long or short. The
+             step list itself is rendered by wizard.js into the nested
+             .wizard-progress element; the buttons are plain DOM siblings it
+             never touches. -->
+        <div class="wizard-progress-bar">
+          <button class="btn btn--secondary btn--small wizard-progress-bar__nav" type="button" data-wizard-prev>‹ Back</button>
+          <div class="wizard-progress" role="list" aria-label="Scenario wizard progress"></div>
+          <button class="btn btn--primary btn--small wizard-progress-bar__nav" type="button" data-wizard-next>Next ›</button>
+        </div>
+
+        <!-- Always-available reset, separate from the progress bar above so it
+             cannot be mistaken for Back/Next or bumped by that row's own
+             layout. Unlike the sidebar's "New scenario" link (pageRouter.js's
+             resetOrResumeWizard(), which deliberately resumes an in-progress
+             draft rather than wiping it — see that module), this always wipes
+             the current draft, behind a confirm(), for someone who explicitly
+             wants to throw it away and start again mid-wizard. -->
+        <div class="wizard-reset-row">
+          <button type="button" class="btn btn--secondary btn--small" data-wizard-reset>Start over</button>
+        </div>
+      </div>
+
+      <!-- Standalone pages (Saved / Library / Settings / About) — rendered by pageRouter.js -->
+      <div class="page-container" hidden></div>
+    </main>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

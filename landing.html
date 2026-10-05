@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<!--
+  landing.html — the project's home page (hazel-project.eu).
+
+  DEPLOYMENT: this file is the home page of hazel-project.eu. Upload it there
+  under the name index.html, together with about.html, how-to-use.html and
+  the folders css/ (tokens.css, layout.css, components.css, site.css),
+  assets/ (hazel_logo.png) and js/site.js, keeping the same relative paths.
+  Inside the repository it cannot be called index.html — that name belongs
+  to the app (lab.hazel-project.eu), which does not need this file.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HAZEL — free, open-source modelling of hazardous chemical releases</title>
+  <meta name="description" content="HAZEL (Hazardous Atmosphere Zoning for European Locations) is a free, open-source tool for estimating hazard zones after a release of dangerous substances: toxic clouds, fires and explosions. Built on NOAA's ALOHA documentation, DEGADIS and other verified scientific sources. Runs offline in any browser." />
+  <link rel="canonical" href="https://hazel-project.eu/" />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://hazel-project.eu/" />
+  <meta property="og:title" content="HAZEL — free, open-source modelling of hazardous chemical releases" />
+  <meta property="og:description" content="Free. Auditable. Fully open source. Hazard zones for toxic clouds, fires and explosions, built on verified scientific sources." />
+  <meta property="og:locale" content="en" />
+  <meta property="og:image" content="https://hazel-project.eu/assets/hazel_logo.png" />
+  <meta name="theme-color" content="#31738d" />
+  <link rel="icon" href="assets/hazel_logo.png" type="image/png" />
+  <link rel="apple-touch-icon" href="assets/hazel_logo.png" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/site.css" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "name": "HAZEL",
+        "url": "https://hazel-project.eu/"
+      },
+      {
+        "@type": "SoftwareApplication",
+        "name": "HAZEL",
+        "alternateName": "Hazardous Atmosphere Zoning for European Locations",
+        "url": "https://lab.hazel-project.eu/",
+        "applicationCategory": "SecurityApplication",
+        "operatingSystem": "Any (web browser; installable as a PWA)",
+        "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+        "author": { "@type": "Person", "name": "Damian Kociemba" },
+        "softwareVersion": "1.0.0",
+        "description": "Free, open-source tool for estimating the extent of hazard zones after an uncontrolled release of a dangerous substance: toxic gas clouds, flammable clouds, fires and vapour cloud explosions."
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Why does HAZEL exist?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Dispersion modelling is split between expensive proprietary software and free reference tools that run only on ageing platforms. HAZEL is free, open source and runs in any modern browser, so it does not depend on a particular operating system or processor architecture." }
+          },
+          {
+            "@type": "Question",
+            "name": "What can HAZEL do?",
+            "acceptedAnswer": { "@type": "Answer", "text": "It models release rates from puddles and damaged tanks, toxic gas dispersion (Gaussian plume and heavy gas), flammable areas, vapour cloud explosions, BLEVE fireballs, pool fires, jet fires and the indoor concentration inside a nearby building, and draws the zones on a map." }
+          },
+          {
+            "@type": "Question",
+            "name": "How accurate is HAZEL?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Compared with ALOHA 5.4.7 in nearly 100 side-by-side runs (more than 250 values), most models agree to within a few per cent, fire and explosion models within about 10 per cent, while heavy-gas zones are systematically 5 to 20 per cent shorter. HAZEL is a beta release." }
+          },
+          {
+            "@type": "Question",
+            "name": "What is HAZEL based on?",
+            "acceptedAnswer": { "@type": "Answer", "text": "The ALOHA technical documentation (NOAA/EPA), the DEGADIS 2.1 dense-gas model, Chamberlain's jet-fire geometry, the U.S. Department of Energy PAC exposure thresholds and further published literature, each cross-checked against its original source." }
+          },
+          {
+            "@type": "Question",
+            "name": "What is HAZEL written in?",
+            "acceptedAnswer": { "@type": "Answer", "text": "JavaScript and HTML5, as a Progressive Web App. The whole application is smaller than 10 MiB and, once loaded, works fully offline." }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I host and modify HAZEL?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Yes. You may host, modify, redistribute and build HAZEL into your own systems, provided that you credit the authors." }
+          },
+          {
+            "@type": "Question",
+            "name": "How can I help HAZEL?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Share sources, including older, undigitised handbooks, that could replace the simplifications listed on the About page, by e-mail or on GitHub. Contributors are credited on the About page with their consent." }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Top bar shown ONLY on mobile (see layout.css) -->
+  <header class="app-topbar">
+    <button class="app-topbar__hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="app-sidebar">☰</button>
+    <span class="app-topbar__brand">
+      <span class="app-topbar__brand-row">HAZEL</span>
+      <span class="app-topbar__brand-sub">Hazardous Atmosphere Zoning for European Locations</span>
+    </span>
+    <img src="assets/hazel_logo.png" alt="" aria-hidden="true" class="app-topbar__logo" />
+  </header>
+
+  <div class="app-shell" data-drawer="closed">
+
+    <div class="app-sidebar-scrim"></div>
+
+    <nav class="app-sidebar" id="app-sidebar" aria-label="Main navigation">
+      <div class="app-sidebar__header">
+        <a class="app-sidebar__brand" href="#overview">
+          <span class="app-sidebar__brand-row">
+            <img src="assets/hazel_logo.png" alt="" aria-hidden="true" class="app-sidebar__brand-icon" />
+            HAZEL
+          </span>
+          <span class="app-sidebar__brand-sub">Hazardous Atmosphere Zoning for European Locations</span>
+        </a>
+        <button class="app-sidebar__close" aria-label="Close menu" type="button">✕</button>
+      </div>
+
+      <a class="app-sidebar__cta" href="https://lab.hazel-project.eu/" target="_blank" rel="noopener">Open HAZEL ↗</a>
+
+      <div class="app-sidebar__scroll">
+        <div class="app-sidebar__group">
+          <h2 class="app-sidebar__group-title">Project</h2>
+          <ul class="app-sidebar__nav">
+            <li><a class="app-sidebar__link" href="./" aria-current="page">Home</a></li>
+            <li><a class="app-sidebar__link" href="how-to-use.html">How to use</a></li>
+            <li><a class="app-sidebar__link" href="about.html">About</a></li>
+          </ul>
+        </div>
+
+        <div class="app-sidebar__group">
+          <h2 class="app-sidebar__group-title">On this page</h2>
+          <ul class="app-sidebar__nav">
+            <li><a class="app-sidebar__link app-sidebar__link--toc" href="#overview">Overview</a></li>
+            <li><a class="app-sidebar__link app-sidebar__link--toc" href="#why">Why does HAZEL exist?</a></li>
+            <li><a class="app-sidebar__link app-sidebar__link--toc" href="#features">What can HAZEL do?</a></li>
+            <li><a class="app-sidebar__link app-sidebar__link--toc" href="#accuracy">How accurate is HAZEL?</a></li>
+            <li><a class="app-sidebar__link app-sidebar__link--toc" href="#sources">What is HAZEL based on?</a></li>
+            <li><a class="app-sidebar__link app-sidebar__link--toc" href="#technology">What is HAZEL written in?</a></li>
+            <li><a class="app-sidebar__link app-sidebar__link--toc" href="#licence">Can I host and modify HAZEL?</a></li>
+            <li><a class="app-sidebar__link app-sidebar__link--toc" href="#contribute">How can I help HAZEL?</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="app-sidebar__footer">
+        <a class="app-sidebar__contact" href="mailto:damian@kocie.mba">
+          <span class="app-sidebar__contact-name">Damian Kociemba</span>
+          <span class="app-sidebar__contact-email">damian@kocie.mba</span>
+        </a>
+      </div>
+    </nav>
+
+    <main class="app-main">
+      <div class="site-container">
+
+        <section id="overview">
+          <div class="panel site-hero">
+            <img src="assets/hazel_logo.png" alt="HAZEL logo" class="site-hero__logo" />
+            <h1>HAZEL – Hazardous Atmosphere Zoning for European Locations</h1>
+            <p class="site-hero__subtitle">Built on verified scientific sources</p>
+            <p class="site-hero__tagline">Free. Auditable. Fully open source.</p>
+            <div class="site-actions">
+              <a class="btn btn--primary" href="https://lab.hazel-project.eu/" target="_blank" rel="noopener">Open HAZEL ↗</a>
+              <a class="btn btn--secondary" href="https://github.com/kociembadamian/HAZEL" target="_blank" rel="noopener">View on GitHub ↗</a>
+            </div>
+            <p class="site-hero__beta"><span class="badge badge--beta">Beta</span> &nbsp;Version 1.0.0 · first public release, October 2026</p>
+          </div>
+
+          <div class="panel" style="margin-top: var(--space-6)">
+            <p>
+              HAZEL (Hazardous Atmosphere Zoning for European Locations) is a
+              free, open-source tool for estimating how far, and for how long,
+              hazard zones extend after an uncontrolled release of a dangerous
+              substance.
+            </p>
+            <p>
+              It was created for the detailed analysis of (hypothetical)
+              incidents at industrial facilities and in the wider field of
+              dangerous goods logistics, above all road and rail transport.
+              Its architecture follows the official technical documentation of
+              ALOHA, the program developed by NOAA and the U.S. EPA, the
+              DEGADIS 2.1 dense-gas model, and published literature that the
+              scientific community treats as reference material — all of it
+              listed <a href="#sources">below</a>.
+            </p>
+            <p>
+              The words “European Locations” describe where the project comes
+              from, not where it works. The physics engine rests on
+              mathematical relationships that behave identically at every
+              point on the globe.
+            </p>
+            <div class="disclaimer-block">
+              <p>
+                <strong>Please note:</strong> HAZEL is an independent tool for
+                training and planning and holds no official government
+                certification. ALOHA is a registered trademark of NOAA. The
+                HAZEL project is not affiliated with NOAA, the U.S. EPA or any
+                other government agency.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section id="why">
+          <div class="panel">
+            <h2>Why does HAZEL exist?</h2>
+            <p>
+              Atmospheric dispersion modelling has long been squeezed between
+              two kinds of barrier: financial and technological.
+            </p>
+            <p>
+              On one side, the market is dominated by commercial, closed-source
+              (proprietary) software. These tools can be very accurate, but
+              they need expensive licences that often have to be renewed. We
+              believe that tools which support engineering decisions and
+              directly protect human life should not sit behind a paywall.
+            </p>
+            <p>
+              On the other side there are respected, free reference tools, with
+              ALOHA at the head. Yet here too a different barrier has grown
+              over the years: technological progress. ALOHA is a classic
+              32-bit desktop program whose Macintosh version is supported only
+              up to macOS 10.11 El Capitan, and it was last updated in
+              September 2016. Apple has since dropped 32-bit applications
+              altogether (macOS 10.15 Catalina, 2019) and moved to its own
+              Apple Silicon (ARM) processors, which cut users of current Macs
+              off from this kind of classic software. On Windows, 32-bit
+              programs still run thanks to the WOW64 subsystem; the Apple
+              ecosystem was left without native support.
+            </p>
+            <p>
+              With the first public beta of HAZEL (October 2026) we set out to
+              remove both barriers at once: a tool that is free, fully open
+              source, and resilient to the architectural changes of tomorrow.
+            </p>
+          </div>
+        </section>
+
+        <section id="features">
+          <div class="panel">
+            <h2>What can HAZEL do?</h2>
+            <p>
+              HAZEL covers the chain from “something is leaking” to “where
+              does the danger reach”: first the rate at which a substance
+              enters the air, then how the cloud spreads, then — if it ignites
+              — fire and explosion effects.
+            </p>
+            <div class="feature-grid">
+              <div class="feature-card">
+                <h3>Release rate</h3>
+                <p>A known rate, an evaporating puddle, or a damaged tank (horizontal or vertical cylinder, sphere) holding a liquid, a gas liquefied under pressure or a compressed gas. Liquid from a tank forms a spreading puddle.</p>
+              </div>
+              <div class="feature-card">
+                <h3>Toxic gas dispersion</h3>
+                <p>Gaussian plume for gases that mix like the surrounding air, including low-level inversions, elevated sources and puddles treated as area sources.</p>
+              </div>
+              <div class="feature-card">
+                <h3>Heavy gas dispersion</h3>
+                <p>A separate model for clouds heavy enough to slump and creep along the ground, such as chlorine or a gas that leaves the source very cold.</p>
+              </div>
+              <div class="feature-card">
+                <h3>Automatic model choice</h3>
+                <p>HAZEL picks Gaussian or heavy-gas dispersion from the cloud's density, the release rate and the wind (Richardson number) — and lets you override it.</p>
+              </div>
+              <div class="feature-card">
+                <h3>Fire and explosion</h3>
+                <p>Flammable area (flash fire), vapour cloud explosion overpressure, BLEVE fireball, pool fire and jet fire. The explosive mass is taken from the dispersing cloud, not typed in by hand.</p>
+              </div>
+              <div class="feature-card">
+                <h3>Indoor concentration</h3>
+                <p>How much of the outdoor cloud reaches the inside of a nearby building — input for a shelter-in-place decision.</p>
+              </div>
+              <div class="feature-card">
+                <h3>Map and reports</h3>
+                <p>Zones on OpenStreetMap, the concentration at any clicked point, KML export for GIS software and a printable PDF report.</p>
+              </div>
+              <div class="feature-card">
+                <h3>Chemical library</h3>
+                <p>3,148 substances with their exposure thresholds, searchable by name or CAS number, plus your own local entries for missing properties or new substances.</p>
+              </div>
+              <div class="feature-card">
+                <h3>Works offline</h3>
+                <p>Install it like an app; after the first load no connection is needed to run a simulation. Saved scenarios stay on your own device.</p>
+              </div>
+            </div>
+            <p class="site-note">
+              Step-by-step instructions are in <a href="how-to-use.html">How to use</a>;
+              what HAZEL deliberately simplifies is listed under
+              <a href="about.html#known-simplifications">Known simplifications</a>.
+            </p>
+          </div>
+        </section>
+
+        <section id="accuracy">
+          <div class="panel">
+            <h2>How accurate is HAZEL?</h2>
+            <p>
+              We did not take the formulas on trust. Nearly 100 scenarios were
+              run side by side in ALOHA 5.4.7 and in HAZEL, and more than 250
+              resulting values were compared. The table gives the picture in
+              six groups; the full 18-row breakdown with test identifiers is on
+              the <a href="about.html#accuracy">About page</a>.
+            </p>
+            <div class="library-table-wrap">
+              <table class="site-table">
+                <thead>
+                  <tr><th>What was compared</th><th>Values</th><th>Typical deviation</th><th>Worth knowing</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Release rates: puddles, tanks, two-phase and compressed-gas releases</td>
+                    <td>70</td>
+                    <td>within ±5%</td>
+                    <td>Compressed-gas tank contents within ±2%. Two-phase releases last about 1.4–1.5× longer, while peak rates and zones are unaffected.</td>
+                  </tr>
+                  <tr>
+                    <td>Gaussian plume: point and elevated sources, inversions, zone width</td>
+                    <td>35</td>
+                    <td>within ±1–3%</td>
+                    <td>Zone width is 4–7% narrower than the reference.</td>
+                  </tr>
+                  <tr>
+                    <td>Gaussian plume from a puddle (area source)</td>
+                    <td>22</td>
+                    <td>within ±10%</td>
+                    <td>Larger gaps only very close to big puddles, where both tools call the result unreliable.</td>
+                  </tr>
+                  <tr>
+                    <td>Heavy gas dispersion</td>
+                    <td>~60</td>
+                    <td>5–20% shorter</td>
+                    <td>A systematic bias towards shorter zones, strongest for small sources within ~100 m. Keep a safety margin.</td>
+                  </tr>
+                  <tr>
+                    <td>Fire and explosion: BLEVE, jet fire, pool fire, flammable area, vapour cloud explosion</td>
+                    <td>49</td>
+                    <td>±1% to ±10%</td>
+                    <td>BLEVE ±1%; pool-fire distances about 8% shorter; the others within about 10%.</td>
+                  </tr>
+                  <tr>
+                    <td>Indoor concentration</td>
+                    <td>6</td>
+                    <td>within ±4%</td>
+                    <td>Building assumed on the cloud's centreline, the most exposed position.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="site-note">
+              The choice between the Gaussian and heavy-gas model matched
+              ALOHA's in 25 of 26 comparisons; the one difference (flashing
+              ammonia) is deliberate and explained on the About page.
+            </p>
+
+            <h3>What these numbers do — and do not — say</h3>
+            <p>
+              Agreement with ALOHA measures how faithfully HAZEL reproduces a
+              respected reference method, not how closely any model matches a
+              real cloud. Even the best dispersion models are uncertain: in his
+              review of field experiments with dense gases, Havens (1992) notes
+              that predicting dispersion within a factor of two or three is
+              already difficult. HAZEL is still a beta release and holds no
+              official certification — treat it as a training and planning
+              aid that supports professional judgement, not as the sole basis
+              for action during a real incident.
+            </p>
+          </div>
+        </section>
+
+        <section id="sources">
+          <div class="panel">
+            <h2>What is HAZEL based on?</h2>
+            <p>
+              A guiding rule of the project: no formula enters the code until
+              it has been checked against its source. What could not be
+              verified is either left out or openly listed as a limitation, but
+              never guessed. These are the sources behind the engine:
+            </p>
+            <ul class="source-list">
+              <li>
+                <span class="source-list__ref">ALOHA Technical Documentation, version 5.4.4 (NOAA Technical Memorandum NOS OR&amp;R 43, 2013)</span>
+                <span class="source-list__use">The backbone: release rates of puddles and tanks, Gaussian and heavy-gas dispersion, thermal radiation, explosion overpressure and indoor infiltration.</span>
+              </li>
+              <li>
+                <span class="source-list__ref">Spicer, T.O. and Havens, J. (1989), User's Guide for the DEGADIS 2.1 Dense Gas Dispersion Model, U.S. EPA, EPA-450/4-89-019</span>
+                <span class="source-list__use">The reference edition of the heavy-gas model, including the equations for the dense “blanket” that forms at the source.</span>
+              </li>
+              <li>
+                <span class="source-list__ref">Havens, J. and Spicer, T.O. (1985), Development of an Atmospheric Dispersion Model for Heavier-Than-Air Gas Mixtures, Vol. I, U.S. Coast Guard (DTIC ADA171522)</span>
+                <span class="source-list__use">Confirmation of heavy-gas constants that the NOAA summary names but does not give.</span>
+              </li>
+              <li>
+                <span class="source-list__ref">Havens, J. (1992), Review of dense gas dispersion field experiments, Journal of Loss Prevention in the Process Industries 5(1)</span>
+                <span class="source-list__use">Background on how dense-gas models, DEGADIS among them, compare with large field trials (Maplin Sands, Thorney Island, Goldfish and others).</span>
+              </li>
+              <li>
+                <span class="source-list__ref">Chamberlain, G.A. (1987), Developments in Design Methods for Predicting Thermal Radiation from Flares, Chem. Eng. Res. Des. 65, 299–309</span>
+                <span class="source-list__use">The original source of the jet-flame geometry.</span>
+              </li>
+              <li>
+                <span class="source-list__ref">Wilson, D.J. (1987) and Sherman, M.H. (1980), as used in the ALOHA documentation</span>
+                <span class="source-list__use">Indoor concentration: the building as a slow filter, and the estimate of its air exchange rate.</span>
+              </li>
+              <li>
+                <span class="source-list__ref">AIChE (1994) guidance on vapour cloud explosions and the Baker–Strehlow–Tang method, as applied in ALOHA</span>
+                <span class="source-list__use">Explosive mass of a flammable cloud and the resulting overpressure.</span>
+              </li>
+              <li>
+                <span class="source-list__ref">Smith, J.M., Van Ness, H.C. and Abbott, M.M., Introduction to Chemical Engineering Thermodynamics</span>
+                <span class="source-list__use">The Pitzer correlation behind the real-gas correction for compressed gases; the acentric factor is estimated with Edmister's method when it is not entered.</span>
+              </li>
+              <li>
+                <span class="source-list__ref">U.S. Department of Energy, Protective Action Criteria (PAC)</span>
+                <span class="source-list__use">The AEGL, ERPG and TEEL exposure thresholds that make up HAZEL's database of 3,148 substances.</span>
+              </li>
+              <li>
+                <span class="source-list__ref">Side-by-side comparison with ALOHA 5.4.7</span>
+                <span class="source-list__use">Nearly 100 scenarios, used to confirm each model and, where the documentation leaves room for interpretation, to choose the reading that reproduces the reference.</span>
+              </li>
+            </ul>
+
+            <h3>What we noticed along the way</h3>
+            <p>
+              Reading several sources side by side turned up a few things worth
+              sharing:
+            </p>
+            <div class="finding-grid">
+              <div class="finding">
+                <h4>A sign in a formula</h4>
+                <p>Chamberlain's original paper gives the slant length of the jet-flame frustum with a minus under the square root; the ALOHA documentation prints a plus. Re-deriving the geometry confirmed the original, so HAZEL uses the minus.</p>
+              </div>
+              <div class="finding">
+                <h4>One formula, two models</h4>
+                <p>A dense cloud is described as a uniform core with Gaussian-shaped edges. In HAZEL the width of those edges comes from the same Briggs lateral-spread relationships as the Gaussian plume, so the two models join smoothly instead of living in separate worlds.</p>
+              </div>
+              <div class="finding">
+                <h4>A constant that is not 0.4</h4>
+                <p>The DEGADIS derivation of the source blanket uses a von Kármán constant of 0.35, while 0.4 is the usual value elsewhere. HAZEL follows each source where it applies, and says so in the code.</p>
+              </div>
+              <div class="finding">
+                <h4>One cloud, everywhere</h4>
+                <p>The explosive mass for a vapour cloud explosion is not a new formula: it is the same concentration field that draws the zones on the map, integrated between 90% of the lower and the upper explosive limit. The cloud you see is the cloud that explodes.</p>
+              </div>
+              <div class="finding">
+                <h4>When a formula is ambiguous</h4>
+                <p>For the indoor model, a key equation was unclear in the copy of the source we worked from. Instead of guessing, we checked its units and compared it with the original Lawrence Berkeley infiltration model; both agreed on the implemented form.</p>
+              </div>
+              <div class="finding">
+                <h4>A threshold that had to be calibrated</h4>
+                <p>The ALOHA documentation gives a Richardson-number threshold of 1 for switching to heavy-gas dispersion. With HAZEL's way of computing the number, 1.95 reproduces ALOHA's own choice of model — a difference we state openly in the guide.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="technology">
+          <div class="panel">
+            <h2>What is HAZEL written in?</h2>
+            <p>
+              To make the engine immune to unexpected changes in hardware and
+              operating systems, HAZEL is built on open web technologies —
+              JavaScript and HTML5. Moving all of the calculation into the
+              browser removes the dependence on operating-system vendors and
+              closed runtime environments (vendor lock-in). The same code runs
+              natively on almost any modern device: desktops and laptops with
+              Windows, macOS, Linux or ChromeOS, and phones and tablets with
+              Android, iOS, iPadOS or HarmonyOS.
+            </p>
+            <p>
+              As a Progressive Web App (PWA) with a service worker, HAZEL
+              combines the freedom of a website with the advantages of
+              traditional desktop software: one click adds it to your desktop
+              or phone's home screen.
+            </p>
+            <p>
+              On first launch the service worker stores the complete
+              calculation engine and the database of more than 3,000 chemical
+              substances on your device. From then on HAZEL works fully
+              offline and needs no connection to run a simulation. Whenever you
+              start it while online, it checks for a newer version and refreshes
+              the files that have changed. The entire program weighs less than
+              10 MiB.
+            </p>
+          </div>
+        </section>
+
+        <section id="licence">
+          <div class="panel">
+            <h2>Can I host and modify HAZEL?</h2>
+            <p>
+              Yes. HAZEL is open source: you may host your own copy, modify it,
+              redistribute it, sell it on and build it into your own systems.
+              The one thing we ask — and the licence requires — is that you
+              credit the authors. The complete source code and the licence
+              text are in the
+              <a href="https://github.com/kociembadamian/HAZEL" target="_blank" rel="noopener">GitHub repository</a>.
+            </p>
+            <p>
+              HAZEL consists of static files only, so any ordinary web server
+              will do — no database or back end is needed. The one file to edit
+              for your own installation is <code>config.js</code>; the optional
+              live-weather connection is switched off by default and described
+              in the repository.
+            </p>
+            <p>
+              The version we host is labelled beta, so modifications that
+              improve the accuracy of the calculations may still appear. If you
+              run your own copy, it is worth checking back from time to time.
+            </p>
+          </div>
+        </section>
+
+        <section id="contribute">
+          <div class="panel">
+            <h2>How can I help HAZEL?</h2>
+            <p>
+              If you have sources — in particular older handbooks that were
+              never digitised — that could replace one of the simplifications
+              we had to make, we would be glad to hear from you. To see where
+              HAZEL stands today, read
+              <a href="about.html#known-simplifications">Known simplifications</a>
+              on the About page and the notes in
+              <a href="how-to-use.html">How to use</a>, and see whether you can
+              help find a better approach.
+            </p>
+            <p>
+              You can send what you have to
+              <a href="mailto:damian@kocie.mba">damian@kocie.mba</a> or open an
+              issue on <a href="https://github.com/kociembadamian/HAZEL" target="_blank" rel="noopener">GitHub</a>.
+              With your consent, we credit everyone who helps as a co-author on
+              the <a href="about.html#thank-you">About page</a>.
+            </p>
+            <div class="site-actions" style="margin-top: var(--space-6)">
+              <a class="btn btn--primary" href="https://lab.hazel-project.eu/" target="_blank" rel="noopener">Open HAZEL ↗</a>
+              <a class="btn btn--secondary" href="https://github.com/kociembadamian/HAZEL" target="_blank" rel="noopener">View on GitHub ↗</a>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <footer class="static-footer">
+        HAZEL · free and open source ·
+        <a href="https://lab.hazel-project.eu/" target="_blank" rel="noopener">Open the app</a> ·
+        <a href="how-to-use.html">How to use</a> ·
+        <a href="about.html">About</a> ·
+        <a href="mailto:damian@kocie.mba">damian@kocie.mba</a>
+      </footer>
+    </main>
+  </div>
+
+  <script src="js/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+HAZEL — Hazardous Atmosphere Zoning for European Locations
+Copyright 2026 Damian Kociemba and contributors
+
+This product includes software developed by Damian Kociemba and the HAZEL
+contributors (https://github.com/kociembadamian/HAZEL,
+https://hazel-project.eu/).
+
+Licensed under the Apache License, Version 2.0 (see the LICENSE file).
+Redistributions, with or without modification, must retain this NOTICE file
+(or its contents in a place where such notices normally appear).
+
+HAZEL is an independent project. It is not affiliated with, endorsed by, or
+supported by the US National Oceanic and Atmospheric Administration (NOAA) or
+the US Environmental Protection Agency (EPA). "ALOHA" is a registered
+trademark of NOAA and is used here only to name the program whose published
+documentation HAZEL's methodology draws on.
+
+------------------------------------------------------------------------
+Scientific and technical sources
+------------------------------------------------------------------------
+HAZEL's calculation engine is an independent implementation, written from the
+following published sources. The source of each formula is cited in the code
+next to it. These works are credited here; no text or code from them is
+redistributed except for short quotations, marked as such in code comments.
+
+- NOAA / EPA, "ALOHA 5.4.4 Technical Documentation", NOAA Technical
+  Memorandum NOS OR&R 43 (2013). The formulas follow this document; the
+  side-by-side comparison runs described on the About page were made with the
+  ALOHA program, version 5.4.7.
+- Spicer, T. O. and Havens, J. A., "User's Guide for the DEGADIS 2.1 Dense Gas
+  Dispersion Model", US EPA, EPA-450/4-89-019 (1989).
+- Havens, J. A. and Spicer, T. O., "Development of an Atmospheric Dispersion
+  Model for Heavier-than-Air Gas Mixtures", Volume I (1985), Defense Technical
+  Information Center, ADA171522.
+- Chamberlain, G. A., "Development in Design Methods for Predicting Thermal
+  Radiation from Flares", Chemical Engineering Research and Design 65,
+  299-309 (1987).
+- The further primary literature cited in the source files and on the About
+  page, including Pasquill (1961), Briggs (1973), Beals (1971), Palazzi et al.
+  (1982), Mudan (1984), Roberts (1982), Moorhouse and Pritchard (1982),
+  Sherman (1980), Wilson (1987), and the AIChE guidelines for vapour cloud
+  explosion evaluation (1994).
+
+------------------------------------------------------------------------
+Data
+------------------------------------------------------------------------
+- Chemical data (data/chemicals.json, data/chemicals.slim.json): derived from the US
+  Department of Energy "Protective Action Criteria (PAC) with AEGLs, ERPGs and
+  TEELs" dataset, a work of the US Government. Conversion script:
+  tools/convert_pac_data.py.
+- Map data and tiles: (c) OpenStreetMap contributors, available under the Open
+  Database Licence (https://www.openstreetmap.org/copyright). Tiles are
+  fetched from the OpenStreetMap tile servers, subject to their tile usage
+  policy.
+- Weather data (only when an operator configures a relay): MET Norway,
+  Locationforecast, licensed CC BY 4.0 / NLOD 2.0
+  (https://api.met.no/). The attribution text shown in the application must
+  not be removed when this feature is enabled.
+
+------------------------------------------------------------------------
+Third-party software loaded at run time (not bundled in this repository)
+------------------------------------------------------------------------
+- Leaflet - BSD 2-Clause licence - https://leafletjs.com/
+  (c) Vladimir Agafonkin, (c) Cloudmade
+- jsPDF - MIT licence - https://github.com/parallax/jsPDF
+  (c) James Hall, yWorks GmbH and contributors
+- ipify API (api.ipify.org) - queried only when a PDF report is generated, to
+  print the generating device's public IP address on the report.
+
+These libraries remain under their own licences. If you serve copies of them
+yourself, keep their licence notices with the copies.

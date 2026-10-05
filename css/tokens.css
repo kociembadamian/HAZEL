@@ -1,0 +1,116 @@
+/*
+  tokens.css
+  ----------
+  Single source of truth for colour, type and spacing across HAZEL.
+  No other stylesheet should contain raw hex/px values for these properties —
+  always reference a variable from here. Retheming (for example a
+  high-contrast mode for use in direct sunlight) then means editing one file
+  rather than hunting through the codebase.
+
+  The palette is deliberately not the usual product-UI default. HAZEL has to
+  stay readable in the field — a truck cab, a screen in full sun — so the base
+  is cool and high-contrast. Warning colours (amber, red) are reserved
+  exclusively for real threat zones in the results view, never as decoration.
+
+  NOTE (2026-09-25): the navigation colour (--color-nav-bg and its two
+  derived shades) was changed from the original dark steel blue (#23414f) to
+  a lighter, more open blue (#31738d) at the user's request, "to give the app
+  some lightness". --color-nav-bg-active and --color-nav-border are derived
+  from it with the SAME lightening steps the previous colours used relative
+  to their own base (roughly +11/+6/+7 and +17/+19/+23 in R/G/B), so the
+  sidebar's hover/active/border relationships stay visually consistent with
+  how they behaved before — this is a hue change, not a redesign of the
+  sidebar's internal contrast. The amber accent and the red/orange/yellow
+  threat colours are unchanged, as requested.
+*/
+
+:root {
+  /* --- Base colours (background / surfaces) --- */
+  --color-bg: #eef1f0;             /* application background — cool pale grey-green */
+  --color-surface: #ffffff;        /* cards, panels, form fields */
+  --color-surface-sunken: #e2e7e5; /* recessed areas, e.g. plot background */
+
+  /* --- Text colours --- */
+  --color-ink: #12242e;            /* primary text — dark steel navy, not black */
+  --color-ink-muted: #4c5c63;      /* secondary text, descriptions, field hints */
+  --color-ink-on-accent: #12242e;  /* text on light accents (amber) */
+  --color-ink-on-dark: #eef1f0;    /* text on dark surfaces (sidebar) */
+
+  /* --- Structural colour (navigation / sidebar) --- */
+  --color-nav-bg: #31738d;         /* open steel blue — separates navigation from content */
+  --color-nav-bg-active: #3c7994;
+  --color-nav-border: #4286a4;
+
+  /* --- Functional accents (USED SPARINGLY, only where they carry meaning) --- */
+  --color-accent: #f2a900;         /* ADR amber — primary actions, active step */
+  --color-accent-hover: #d99500;
+
+  /* --- Threat zone colours — fixed, do not change without good reason.
+     These three match the ALOHA convention (red / orange / yellow) and must
+     stay recognisable to anyone who already knows that tool. --- */
+  --color-threat-red: #c6362b;
+  --color-threat-orange: #e2792b;
+  --color-threat-yellow: #e8c22a;
+
+  /* --- Status / messaging --- */
+  --color-success: #2f7a4f;
+  --color-warning: #b3781f;
+  --color-danger: #b3271f;
+  --color-border: #cfd6d4;
+
+  /* --- Typography ---
+     IBM Plex Sans: a grotesque designed for technical and engineering use
+     (IBM). It suits the subject matter and is not the default product-UI
+     choice (Inter / system-ui).
+     IBM Plex Mono: same family lineage, used ONLY for numeric data
+     (coordinates, concentrations, weather readings) so digits align in
+     columns. That is a functional use, not decoration. */
+  --font-ui: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-data: "IBM Plex Mono", "Courier New", monospace;
+
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.75rem;
+
+  /* --- Spacing (4px scale) --- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+
+  /* --- Radii / shadows — kept minimal --- */
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  /* --radius-lg (2026-09-25): only used by the wizard's floating progress
+     bar (see layout.css) — a more pronounced, "pill-like" rounding is what
+     reads as a modern floating toolbar rather than an ordinary panel. */
+  --radius-lg: 16px;
+  --shadow-panel: 0 1px 3px rgba(18, 36, 46, 0.12);
+  /* --shadow-float: a stronger, softer shadow for elements that float ABOVE
+     page content (currently only the wizard progress bar) rather than sit
+     flush within it like an ordinary .panel — it needs to visually lift off
+     the page since real content now scrolls underneath it. */
+  --shadow-float: 0 8px 28px rgba(18, 36, 46, 0.22);
+
+  /* RGB triplets alongside their hex colours above, for use in rgba() where
+     a translucent version of an existing colour is needed (currently the
+     frosted-glass background of the floating progress bar) without
+     duplicating the colour itself and risking the two drifting apart. */
+  --color-surface-rgb: 255, 255, 255;
+
+  /* --- Layout dimensions --- */
+  --sidebar-width: 240px;
+  --breakpoint-mobile: 768px; /* below this width: hamburger replaces sidebar */
+}
+
+/* Respect the operating system's reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,11 @@
+# HAZEL (lab.hazel-project.eu) — the running application.
+# Everything here is free to crawl: there is no server, no user accounts,
+# and nothing behind a login. index.html is the app itself (a client-side
+# wizard); about.html and how-to-use.html are standalone static pages built
+# specifically to be crawlable on their own, without executing HAZEL's own
+# in-app navigation. See sitemap.xml for the canonical list of pages.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://lab.hazel-project.eu/sitemap.xml

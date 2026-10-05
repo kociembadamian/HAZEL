@@ -1,0 +1,988 @@
+/*
+  components.css
+  --------------
+  Reusable pieces used inside the wizard steps: buttons, choice cards, form
+  fields, banners. New steps (chemical, weather, source, results) should be
+  assembled from these classes wherever possible rather than inventing
+  one-off variants.
+*/
+
+h1, h2, h3 {
+  font-weight: 600;
+  color: var(--color-ink);
+  margin-top: 0;
+}
+
+h1 { font-size: var(--font-size-xl); }
+h2 { font-size: var(--font-size-lg); }
+
+p {
+  color: var(--color-ink-muted);
+  max-width: 65ch; /* readable line length */
+}
+
+/* ---------- Card / panel ---------- */
+
+.panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-panel);
+  padding: var(--space-6);
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  font-family: var(--font-ui);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.btn--primary {
+  background: var(--color-accent);
+  color: var(--color-ink-on-accent);
+}
+.btn--primary:hover { background: var(--color-accent-hover); }
+
+.btn--secondary {
+  background: transparent;
+  border-color: var(--color-border);
+  color: var(--color-ink);
+}
+.btn--secondary:hover { background: var(--color-surface-sunken); }
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* A toggle-style secondary button currently "active" — used by the Weather
+   step's Quick presets row (2026-09-23) so the preset that produced the
+   form's current values stays visibly marked until a field is hand-edited.
+   Reuses aria-pressed rather than a bespoke class, since that is also the
+   semantically correct attribute for a toggle button and gives the same
+   state to assistive tech for free. */
+.btn--secondary[aria-pressed="true"] {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-ink-on-accent);
+}
+
+/* ---------- Choice cards (e.g. release source type in step 4) ---------- */
+
+.choice-card {
+  display: block;
+  text-align: left;
+  width: 100%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  cursor: pointer;
+}
+
+.choice-card[aria-pressed="true"] {
+  border-color: var(--color-accent);
+  border-width: 2px;
+  padding: calc(var(--space-4) - 1px); /* compensate for the thicker border */
+}
+
+.choice-card__title {
+  font-weight: 600;
+  display: block;
+}
+
+.choice-card__desc {
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-muted);
+}
+
+/* ---------- Form fields ---------- */
+
+label {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  margin-bottom: var(--space-1);
+}
+
+input[type="text"],
+input[type="number"],
+select {
+  width: 100%;
+  font-family: var(--font-data); /* numeric input — aligned digits */
+  font-size: var(--font-size-base);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-ink);
+}
+
+.field {
+  margin-bottom: var(--space-4);
+}
+
+.field__hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-ink-muted);
+  margin-top: var(--space-1);
+}
+
+/* ---------- Banners (e.g. "weather data is 2 hours old") ---------- */
+
+.banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid;
+  margin-bottom: var(--space-4);
+  font-size: var(--font-size-sm);
+}
+
+.banner--info {
+  background: #e7eef1;
+  border-color: #9fb7c1;
+  color: var(--color-ink);
+}
+
+.banner--warning {
+  background: #fbeed9;
+  border-color: var(--color-warning);
+  color: #6b4a10;
+}
+
+.banner__actions {
+  margin-left: auto;
+  display: flex;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+/* ---------- Small status badges (e.g. "Beta" next to the version number on
+   the About page, 2026-09-23) ---------- */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  padding: 0.15em 0.65em;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  line-height: 1.6;
+}
+
+/* Reuses the same warning colours as .banner--warning, rather than a new
+   colour, so "beta" reads consistently with every other "pay attention to
+   this" surface in the app instead of introducing a fourth accent colour. */
+.badge--beta {
+  background: #fbeed9;
+  color: #6b4a10;
+  border: 1px solid var(--color-warning);
+}
+
+/* ---------- Loading indicator (2026-09-25) ----------
+   Shown briefly by wizard.js and pageRouter.js while a step or page's own
+   render() is in flight — see domUtils.js's loadingSpinnerHtml(). A plain
+   CSS spinner (no image/font dependency) so it works fully offline like
+   everything else in HAZEL. */
+.loading-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-8) var(--space-4);
+  color: var(--color-ink-muted);
+  font-size: var(--font-size-sm);
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  animation: hazel-spin 0.7s linear infinite;
+}
+
+@keyframes hazel-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- Pre-use consent gate (2026-09-25) ----------
+   A full-page overlay shown once per browser before HAZEL is used — see
+   consentGate.js for why. It is the one place in HAZEL that intentionally
+   uses a literal z-index rather than a stacking-context trick like
+   .map-container's isolation: isolate — this is a genuine "must always be
+   on top of literally everything, including the mobile drawer at z-index
+   30" case, and it is a direct child of <body>, not nested inside any of
+   the app shell's own stacking contexts, so a high z-index here cannot
+   conflict with those. */
+.consent-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(18, 36, 46, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+}
+
+.consent-gate__panel {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-panel);
+  padding: var(--space-6);
+  max-width: 480px;
+  width: 100%;
+}
+
+.consent-gate__logo {
+  width: 48px;
+  height: 48px;
+  margin-bottom: var(--space-3);
+}
+
+.consent-gate__panel h1 {
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--space-3);
+}
+
+.consent-gate__panel p {
+  margin-bottom: var(--space-4);
+}
+
+.consent-gate__check {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  font-weight: 400;
+  margin-bottom: var(--space-3);
+  cursor: pointer;
+}
+
+.consent-gate__check input {
+  margin-top: 3px;
+  accent-color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+.consent-gate__check--muted {
+  color: var(--color-ink-muted);
+  font-size: var(--font-size-xs);
+}
+
+.consent-gate__panel .btn {
+  width: 100%;
+  justify-content: center;
+  margin-top: var(--space-2);
+}
+
+/* ---------- Threat zone badges (matching the ALOHA colour convention) ---------- */
+
+.threat-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-data);
+  font-size: var(--font-size-sm);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-sm);
+  color: #fff;
+  /* NOTE (2026-09-25): on narrow screens the badge's own text (e.g. "Flash
+     fire") was breaking onto a second line because it ran out of horizontal
+     room but was never told not to wrap — on desktop the same badge simply
+     had enough space and never revealed the problem. white-space: nowrap
+     keeps the label on one line; flex-shrink: 0 stops the badge itself from
+     being squeezed by a flexible sibling, so the badge instead sits at its
+     natural width and any layout wrapping happens around it, not inside it. */
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.threat-badge--red { background: var(--color-threat-red); }
+.threat-badge--orange { background: var(--color-threat-orange); color: var(--color-ink); }
+.threat-badge--yellow { background: var(--color-threat-yellow); color: var(--color-ink); }
+/* Flash fire (flammable area) is a different HAZARD TYPE, not a fourth
+   toxicity severity — deliberately not on the red/orange/yellow gradient
+   so it can never be mistaken for a more- or less-severe PAC level. */
+.threat-badge--flame { background: #7c3aed; }
+
+/* ==========================================================================
+   Additions for the Weather step
+   ========================================================================== */
+
+/* Small button variant, for inline actions inside banners and preset rows */
+.btn--small {
+  padding: var(--space-1) var(--space-3);
+  font-size: var(--font-size-xs);
+}
+
+/* The two equal mode choices at the top of the Weather step. Side by side on
+   a wide screen, stacked on a narrow one — neither is visually subordinate,
+   because manual entry is a first-class mode, not a fallback. */
+.mode-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.choice-card:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.preset-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* Form fields laid out in columns that collapse to one on narrow screens.
+   minmax with auto-fit means no breakpoint is needed: the browser fits as
+   many 240px columns as there is room for. */
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-4);
+}
+
+/* An input with a unit selector or suffix attached */
+.input-pair {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.input-pair input {
+  flex: 1;
+  min-width: 0; /* lets the input shrink inside the flex row */
+}
+
+.input-pair select {
+  width: auto;
+  flex-shrink: 0;
+}
+
+.input-suffix {
+  font-family: var(--font-data);
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-muted);
+  flex-shrink: 0;
+  min-width: 2.5rem;
+}
+
+input[type="range"] {
+  accent-color: var(--color-accent);
+}
+
+/* Panel showing values derived from the inputs rather than typed by the user.
+   The sunken background marks it as output, not something to fill in. */
+.panel--derived {
+  margin-top: var(--space-6);
+  background: var(--color-surface-sunken);
+}
+
+.panel--derived h3 {
+  font-size: var(--font-size-base);
+  margin-bottom: var(--space-3);
+}
+
+/* Definition list of derived readings */
+.readout {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-2) var(--space-4);
+}
+
+.readout > div {
+  display: flex;
+  flex-wrap: wrap; /* long values (e.g. DMS coordinates) drop to their own
+                       line instead of overflowing into the next grid cell —
+                       flex items refuse to shrink below their content's
+                       width by default, which is what caused the overlap */
+  justify-content: space-between;
+  gap: var(--space-1) var(--space-3);
+  padding: var(--space-1) 0;
+  border-bottom: 1px solid var(--color-border);
+  min-width: 0;
+}
+
+.readout dt {
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-muted);
+}
+
+.readout dd {
+  margin: 0;
+  font-family: var(--font-data);
+  font-size: var(--font-size-sm);
+  color: var(--color-ink);
+  text-align: right;
+}
+
+/* Data source attribution — required by the CC BY licence on weather data */
+.attribution {
+  font-size: var(--font-size-xs);
+  color: var(--color-ink-muted);
+  margin-top: var(--space-6);
+  margin-bottom: 0;
+}
+
+.attribution a {
+  color: var(--color-ink-muted);
+}
+
+.text-danger {
+  color: var(--color-danger);
+}
+
+@media (max-width: 768px) {
+  .mode-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   Additions for the Chemical step
+   ========================================================================== */
+
+/* Search results. A flat list rather than cards: a search can return 25 rows
+   and card padding would push all but the first few below the fold. */
+.result-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-top: var(--space-3);
+  max-height: 22rem;
+  overflow-y: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-border);
+}
+
+.result-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: var(--color-surface);
+  padding: var(--space-3) var(--space-4);
+  cursor: pointer;
+  font-family: var(--font-ui);
+}
+
+.result-item:hover {
+  background: var(--color-surface-sunken);
+}
+
+.result-item__name {
+  display: block;
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  color: var(--color-ink);
+}
+
+.result-item__meta {
+  display: block;
+  font-family: var(--font-data);
+  font-size: var(--font-size-xs);
+  color: var(--color-ink-muted);
+  margin-top: var(--space-1);
+}
+
+.result-item__formula {
+  margin-left: var(--space-2);
+}
+
+/* A substance the engine cannot use is shown rather than hidden — knowing it
+   exists but lacks data is more useful than it silently not appearing. */
+.result-item[data-unusable="true"] .result-item__name {
+  color: var(--color-ink-muted);
+}
+
+/* Level of concern selection */
+.level-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.level-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  cursor: pointer;
+  font-weight: 400;
+  margin-bottom: 0;
+}
+
+.level-row:hover {
+  background: var(--color-surface-sunken);
+}
+
+.level-row--unavailable {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.level-row input[type="checkbox"] {
+  accent-color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+.level-row__desc {
+  flex: 1;
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-muted);
+}
+
+.level-row__value {
+  font-family: var(--font-data);
+  font-size: var(--font-size-sm);
+  color: var(--color-ink);
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  /* Stack the level row on a narrow screen: the description and value do not
+     fit beside a badge and a checkbox at phone width. */
+  .level-row {
+    flex-wrap: wrap;
+  }
+  .level-row__desc {
+    flex-basis: 100%;
+    order: 3;
+  }
+}
+
+/* ==========================================================================
+   Additions for the Source step
+   ========================================================================== */
+
+/* The three source types, side by side on a wide screen. Three columns rather
+   than the two used in the Weather step, because these are peers with no
+   default — the choice depends entirely on the incident. */
+.source-type-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+/* Inline help toggle beside a field that needs a value looked up elsewhere.
+   Small and unobtrusive: the field is usable without it, and the explanation
+   only appears when asked for. */
+.help-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-left: var(--space-2);
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-ink-muted);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.help-button:hover {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-ink-on-accent);
+}
+
+@media (max-width: 768px) {
+  .source-type-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Small inline notice used by the weather-refresh throttle courtesy check */
+.throttle-notice {
+  font-size: var(--font-size-xs);
+  color: var(--color-ink-muted);
+}
+
+/* ==========================================================================
+   Additions for Results, Saved, and Library pages
+   ========================================================================== */
+
+/* Standalone pages hide the wizard progress bar and step chrome entirely;
+   they render into .page-container instead (see pageRouter.js).
+
+   NOTE (2026-09-23, revised 2026-09-25): .panel is used both here AND
+   inside the wizard, and both must end up the SAME width — the first fix
+   here gave .page-container's panel its own, narrower max-width, which
+   only traded one inconsistency (paragraphs narrower than lists) for a
+   different one (Saved/Library/About/Results narrower than New scenario).
+   The actual cause was always the global `p` rule above, which caps
+   paragraph width at 65 characters for readability while plain HTML lists
+   (<ul>) and the disclaimer box get no such cap — so on a wide page,
+   paragraphs stayed narrow while lists and the disclaimer box stretched to
+   the panel's full width. The fix is simply to lift that cap wherever a
+   paragraph shares a panel with unconstrained elements — i.e. everywhere
+   `.panel` is used, wizard included — rather than introducing a second,
+   competing width. Nothing here constrains .panel's own width at all; it
+   uses whatever the surrounding layout (wizard or page-container) gives
+   it, identically in both places. */
+.panel > p,
+.panel .disclaimer-block p {
+  max-width: none;
+}
+
+.page-container h1 { margin-bottom: var(--space-4); }
+.page-container h2 { margin-top: var(--space-6); }
+.page-container ul { padding-left: 1.25rem; color: var(--color-ink-muted); }
+.page-container li { margin-bottom: var(--space-2); }
+
+/* ==========================================================================
+   Standalone static pages (about.html, how-to-use.html)
+   ==========================================================================
+   These two are plain, ordinary HTML documents on their own URLs — not
+   part of the single-page app shell in index.html — built specifically so
+   a search engine crawler, which does not click through HAZEL's own
+   JS-driven sidebar routing (see pageRouter.js), still finds real content
+   and real internal links at a URL of its own for each. They reuse
+   .app-main/.page-container/.panel above for the same look as the in-app
+   "How to use" and "About" views (pageSettings.js/pageAbout.js render the
+   identical content client-side, for someone already inside the app), and
+   only need this small nav/footer of their own since they have no sidebar. */
+.static-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-8);
+  background: var(--color-nav-bg);
+  color: var(--color-ink-on-dark);
+}
+
+.static-nav__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-ink-on-dark);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: var(--font-size-lg);
+}
+
+.static-nav__brand-icon {
+  height: 28px;
+  width: auto;
+}
+
+.static-nav__links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.static-nav__links a {
+  color: var(--color-ink-on-dark);
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+}
+.static-nav__links a:hover { text-decoration: underline; }
+
+/* The link back into the running app is the one action on this page that
+   matters more than the others — styled as a small pill rather than a plain
+   text link so it reads as the primary call to action, not just another
+   nav item. */
+.static-nav__cta {
+  background: var(--color-accent);
+  color: var(--color-ink-on-accent) !important;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+}
+.static-nav__cta:hover { background: var(--color-accent-hover); text-decoration: none !important; }
+
+.static-footer {
+  padding: var(--space-6) var(--space-8) var(--space-8);
+  color: var(--color-ink-muted);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+.static-footer a { color: inherit; }
+
+/* "Full documentation" placeholder (2026-10-03) — a greyed-out, disabled
+   button at the top of About and How to use, with a short note beneath it.
+   No full documentation is written while HAZEL is in beta; the button
+   shows where it will appear and says why it is not there yet. Reuses
+   .btn/.btn--secondary and the existing .btn:disabled look. */
+.docs-placeholder {
+  margin-bottom: var(--space-5);
+}
+
+.docs-placeholder .btn {
+  margin-bottom: var(--space-2);
+}
+
+.docs-placeholder__note {
+  font-size: var(--font-size-xs);
+  color: var(--color-ink-muted);
+  margin: 0;
+}
+
+/* The map needs an explicit height — Leaflet cannot size itself from
+   surrounding content. 420px is comfortable on a laptop and still leaves
+   room to scroll on a phone.
+
+   NOTE (2026-09-23): position:relative + isolation:isolate makes this its
+   own stacking context. Without it, Leaflet's internal panes and controls
+   (which carry their own z-index values — the zoom control alone is
+   z-index:1000 in Leaflet's own stylesheet) were comparing directly against
+   the APP SHELL's z-index values (the mobile drawer at 30, its scrim at 25,
+   the sticky topbar at 20), because neither this element nor Leaflet's own
+   `.leaflet-container` had ever been given a z-index of their own — and
+   `position: relative` alone does NOT create a new stacking context (only
+   `position` PLUS an actual z-index, or a property like `isolation`, does).
+   The practical symptom: opening the mobile menu, or simply scrolling the
+   page so the sticky topbar was in view, showed the map painted on top of
+   both, since 1000 beats 30 and 20 when nothing contains it. isolation:
+   isolate is the standard, most maintainable way to say "whatever z-index
+   values exist inside here are opaque details of this element, not visible
+   to its position in the surrounding stacking order" — it needs no
+   made-up z-index number of its own, so it cannot silently start losing
+   to some future addition elsewhere in the page. */
+.map-container {
+  height: 420px;
+  width: 100%;
+  position: relative;
+  isolation: isolate;
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
+  background: var(--color-surface-sunken); /* visible while tiles are loading */
+}
+
+.zone-legend {
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-4);
+}
+
+.zone-legend__row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+}
+
+/* NOTE (2026-10-03): description on top, the distance/width figures on
+   their own line beneath it. They used to be a third, nowrap column, which
+   on a phone made the row wider than the screen and scrolled the whole
+   page sideways. min-width: 0 lets this column shrink inside the flex row
+   instead of forcing the row wider than its container. */
+.zone-legend__text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.zone-legend__desc {
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-muted);
+}
+
+.zone-legend__value {
+  font-family: var(--font-data);
+  font-size: var(--font-size-sm);
+  color: var(--color-ink);
+  overflow-wrap: anywhere;
+}
+
+/* Each figure stays whole ("1426 m downwind"); a narrow screen wraps
+   between the two figures rather than in the middle of one. */
+.zone-legend__figure {
+  white-space: nowrap;
+}
+
+.zone-legend__sep {
+  color: var(--color-ink-muted);
+}
+
+.results-actions {
+  display: flex;
+  gap: var(--space-3);
+  margin: var(--space-6) 0;
+}
+
+/* Saved scenarios list */
+.saved-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.saved-item__name {
+  display: block;
+  font-weight: 600;
+}
+
+.saved-item__date {
+  display: block;
+  font-size: var(--font-size-xs);
+  color: var(--color-ink-muted);
+}
+
+.saved-item__actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+/* Chemical library results table */
+.library-table-wrap {
+  overflow-x: auto;
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.library-table {
+  width: 100%;
+  min-width: 640px; /* forces horizontal scroll on narrow viewports instead
+                        of crushing columns unreadably thin */
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.library-table th,
+.library-table td {
+  text-align: left;
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.library-table th {
+  color: var(--color-ink-muted);
+  font-weight: 600;
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.library-table td:nth-child(n+4) {
+  font-family: var(--font-data);
+}
+
+@media (max-width: 768px) {
+  .map-container { height: 320px; }
+  .results-actions { flex-direction: column; }
+}
+
+/* Scenario summary line shown at the top of Results — identifies what a
+   reopened scenario is about without a trip back to the Chemical step. */
+.scenario-summary {
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-muted);
+  margin-top: calc(-1 * var(--space-2));
+  margin-bottom: var(--space-4);
+}
+
+.saved-item__summary {
+  display: block;
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-muted);
+}
+
+/* Prominent disclaimer block on the About page — visually distinct from
+   ordinary body text since its content is a legal/safety statement the
+   reader should not skim past.
+
+   NOTE (2026-09-23): left padding bumped from --space-5 to --space-6 so the
+   text sits a bit further from the red accent bar — at the old padding the
+   text looked slightly cramped against it. */
+.disclaimer-block {
+  background: var(--color-surface-sunken);
+  border-left: 4px solid var(--color-threat-red);
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-5) var(--space-4) var(--space-6);
+  margin: var(--space-5) 0;
+}
+.disclaimer-block p {
+  margin: 0 0 var(--space-3) 0;
+  font-size: var(--font-size-sm);
+}
+.disclaimer-block p:last-child { margin-bottom: 0; }
+
+/* ==========================================================================
+   About page header (2026-09-23) — the logo beside "About HAZEL" is
+   deliberately larger than the sidebar/topbar one (that one is sized to
+   match running text; this is closer to a hero treatment for the page that
+   introduces the whole project), plus a version/beta line beneath the
+   title.
+   ========================================================================== */
+.about-hero {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.about-hero__logo {
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+}
+
+.about-hero h1 {
+  margin-bottom: var(--space-1);
+}
+
+.about-hero__version {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-muted);
+}
+
+/* ==========================================================================
+   Wizard reset row (2026-09-29) — a plain, centred row below the progress
+   bar for the "Start over" button. Deliberately its own row rather than a
+   fourth item stuffed into .wizard-progress-bar: that bar's three-item
+   layout (Back / step list / Next) is unrelated CSS this change should not
+   need to touch or risk breaking.
+   ========================================================================== */
+.wizard-reset-row {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-3);
+}

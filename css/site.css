@@ -1,0 +1,326 @@
+/*
+  site.css
+  --------
+  Extras for the three standalone, crawlable pages — landing (index), about
+  and how-to-use — that sit OUTSIDE the app (hazel-project.eu).
+
+  NOTE (2026-10-05): these pages now use the SAME shell as the app itself
+  (.app-shell / .app-sidebar / .app-topbar from layout.css), so a visitor
+  sees the identical sidebar and mobile drawer. layout.css and tokens.css
+  are reused untouched; this file only adds what the app's sidebar never
+  needed:
+    - the "Open HAZEL" button at the top of the sidebar (opens the app in
+      a new tab),
+    - the in-page navigation of the landing page ("Why does HAZEL
+      exist?", ...) with a highlighted current section (see site.js),
+    - the landing page's own blocks: hero, feature cards, summary table,
+      source list.
+  It replaces the old .static-nav bar of about.html / how-to-use.html (those
+  rules remain in components.css, now unused by these pages, harmless).
+*/
+
+/* ---------- Smooth in-page scrolling ----------
+   .app-main is the scroll container on desktop (layout.css pins .app-shell
+   to the viewport); on mobile the document itself scrolls — so both get it. */
+html,
+.app-main {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html,
+  .app-main {
+    scroll-behavior: auto;
+  }
+}
+
+/* ---------- Sidebar additions ---------- */
+
+/* "Open HAZEL" — the one action that matters most, so it is a solid amber
+   button pinned between the brand and the scrolling link list (it never
+   scrolls out of reach, however long the in-page menu gets). */
+.app-sidebar__cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  background: var(--color-accent);
+  color: var(--color-ink-on-accent);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.app-sidebar__cta:hover {
+  background: var(--color-accent-hover);
+}
+
+/* Current section of the page being read (set by site.js while scrolling).
+   Same look as the app's own current-page marker. */
+.app-sidebar__link[aria-current="location"] {
+  background: var(--color-nav-bg-active);
+  border-left-color: var(--color-accent);
+  font-weight: 600;
+}
+
+/* In-page questions are plain sentences, often two lines long — a little
+   tighter than the main links so the list stays short. */
+.app-sidebar__link--toc {
+  padding: var(--space-2) var(--space-3);
+  line-height: 1.3;
+}
+
+/* ---------- Shared page furniture ---------- */
+
+/* Logo at the right of the mobile top bar. :where() gives this zero
+   specificity, so if layout.css defines its own size for the logo, that
+   definition wins; this is only a safety net so the image can never render
+   at its natural (huge) size. */
+:where(.app-topbar__logo) {
+  height: 32px;
+  width: auto;
+}
+
+a.btn {
+  text-decoration: none;
+}
+
+/* The footer of the standalone pages lives inside .app-main, so it scrolls
+   with the content instead of floating under the sidebar. */
+.app-main > .static-footer {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* ---------- Landing page ---------- */
+
+.site-container {
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.site-container > section {
+  margin-bottom: var(--space-6);
+  /* A section reached from the sidebar should not land flush against the
+     very top edge; on mobile the sticky top bar needs extra room (below). */
+  scroll-margin-top: var(--space-4);
+}
+
+.site-container h2 {
+  margin-top: 0;
+  margin-bottom: var(--space-4);
+}
+
+.site-container h3 {
+  font-size: var(--font-size-base);
+  margin: var(--space-6) 0 var(--space-2);
+}
+
+.site-container .panel > ul,
+.site-container .panel > ol {
+  padding-left: 1.25rem;
+  color: var(--color-ink-muted);
+}
+
+.site-container .panel li {
+  margin-bottom: var(--space-2);
+}
+
+.site-hero {
+  text-align: center;
+  padding: var(--space-8) var(--space-6);
+}
+
+.site-hero__logo {
+  width: 88px;
+  height: 88px;
+  margin-bottom: var(--space-3);
+}
+
+.site-hero h1 {
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--space-2);
+  overflow-wrap: anywhere;
+}
+
+.site-hero__subtitle {
+  font-size: var(--font-size-lg);
+  font-weight: 400;
+  color: var(--color-ink-muted);
+  margin: 0 0 var(--space-4);
+}
+
+.site-hero__tagline {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-ink);
+  margin: 0 auto var(--space-6);
+  max-width: none;
+}
+
+.site-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.site-actions .btn {
+  padding: var(--space-3) var(--space-8);
+}
+
+.site-hero__beta {
+  margin-top: var(--space-4);
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-muted);
+}
+
+/* Feature cards ("What can HAZEL do?") */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.feature-card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  background: var(--color-bg);
+}
+
+.feature-card h3 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-size-base);
+}
+
+.feature-card p {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  max-width: none;
+}
+
+/* Accuracy summary table. Same wrapper as the Chemical library table. */
+.site-table {
+  width: 100%;
+  min-width: 620px;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.site-table th,
+.site-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.site-table th {
+  color: var(--color-ink-muted);
+  font-weight: 600;
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.site-table td:nth-child(2),
+.site-table td:nth-child(3) {
+  font-family: var(--font-data);
+  white-space: nowrap;
+}
+
+.site-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Table footnote / pointer to the full table on About */
+.site-note {
+  font-size: var(--font-size-sm);
+  margin-top: var(--space-4);
+}
+
+/* Source list ("What is HAZEL based on?") */
+.source-list {
+  list-style: none;
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.source-list li {
+  border-left: 3px solid var(--color-nav-bg);
+  padding: var(--space-1) 0 var(--space-1) var(--space-4);
+  margin: 0;
+}
+
+.source-list__ref {
+  display: block;
+  font-weight: 600;
+  color: var(--color-ink);
+  font-size: var(--font-size-sm);
+}
+
+.source-list__use {
+  display: block;
+  color: var(--color-ink-muted);
+  font-size: var(--font-size-sm);
+  margin-top: 2px;
+}
+
+/* "What we noticed along the way" */
+.finding-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.finding {
+  background: var(--color-surface-sunken);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+
+.finding h4 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-size-sm);
+  color: var(--color-ink);
+}
+
+.finding p {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  max-width: none;
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 768px) {
+  /* The sticky top bar (layout.css) covers the top ~56px of the page */
+  .site-container > section {
+    scroll-margin-top: 4.5rem;
+  }
+
+  .site-hero {
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .site-hero h1 {
+    font-size: var(--font-size-lg);
+  }
+
+  .site-hero__subtitle,
+  .site-hero__tagline {
+    font-size: var(--font-size-base);
+  }
+
+  .site-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

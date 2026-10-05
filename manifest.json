@@ -1,0 +1,19 @@
+{
+  "name": "HAZEL — Hazardous Atmosphere Zoning for European Locations",
+  "short_name": "HAZEL",
+  "description": "A free, open-source European alternative to ALOHA. Enter details about a real or potential chemical release and HAZEL generates threat zone estimates for toxic, flammable and thermal hazards. Works fully offline.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#eef1f0",
+  "theme_color": "#31738d",
+  "lang": "en",
+  "categories": ["utilities", "productivity", "education"],
+  "icons": [
+    {
+      "src": "assets/hazel_logo.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

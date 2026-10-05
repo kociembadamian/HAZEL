@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  sitemap.xml — lab.hazel-project.eu
+
+  Three URLs, deliberately: the app itself, and the two standalone pages
+  built so a crawler has real, indexable content to find without running
+  HAZEL's own client-side navigation (see about.html's and how-to-use.html's
+  own SEO notes, and pageRouter.js). Saved scenarios, the chemical library
+  and the results view are per-user, client-side-only state with no stable
+  public URL of their own, so they are correctly absent here.
+
+  Update <lastmod> when a listed page's content changes.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://lab.hazel-project.eu/</loc>
+    <lastmod>2026-10-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://lab.hazel-project.eu/how-to-use.html</loc>
+    <lastmod>2026-10-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://lab.hazel-project.eu/about.html</loc>
+    <lastmod>2026-10-05</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>

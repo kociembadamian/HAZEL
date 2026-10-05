@@ -1,0 +1,645 @@
+/*
+  layout.css
+  ----------
+  The application shell: a persistent sidebar on desktop, a slide-out drawer
+  behind a hamburger on mobile. This is ONE component in HTML/JS — the
+  desktop/mobile difference is purely CSS (a media query), not a separate
+  code path.
+
+  One distinction is held consistently throughout the project:
+  - sidebar / hamburger = navigation OUTSIDE the wizard (saved scenarios,
+    settings, about)
+  - the wizard progress bar (.wizard-progress) = ALWAYS visible, never
+    hidden behind the hamburger even on the smallest screen, because someone
+    filling in a form must always see which step they are on.
+
+  NOTE (2026-09-25): the sidebar was restructured into three parts — a fixed
+  header (brand + mobile close button), a scrolling middle section (the
+  Workplace/Docs/Other tools link groups), and a fixed footer (the Contact
+  button) — because the sidebar now has enough content (three link groups
+  plus three "other tools" cards) that it can outgrow the viewport height on
+  a shorter screen. Without this split, a tall sidebar would either get cut
+  off with no way to reach the links at the bottom, or push the Contact
+  button off-screen entirely. Splitting the sidebar into header/scroll/footer
+  keeps the brand always visible at the top, the link groups independently
+  scrollable in the middle, and Contact always reachable at the bottom,
+  regardless of how much the sidebar's content grows in the future.
+*/
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-ui);
+  font-size: var(--font-size-base);
+  line-height: 1.5;
+}
+
+/* Visible keyboard focus — never remove the outline without a replacement */
+:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ---------- Main structure ---------- */
+
+/* NOTE (2026-09-26): min-height:100vh was the root cause of two reported
+   bugs at once — the sidebar not staying pinned to the side while scrolling,
+   and the wizard progress bar's position:sticky doing nothing. With only a
+   MINIMUM height, a tall page (long step content) made .app-shell grow
+   taller than the viewport, so the DOCUMENT itself became the thing that
+   scrolls, dragging the sidebar grid cell up with it. .app-main's
+   `overflow-y: auto` still formally made it "a scroll container" per the
+   CSS spec, but since .app-main's own box was never actually shorter than
+   its content (the grid row had already grown to fit), it never scrolled
+   internally — and a sticky element only sticks relative to a scroll
+   container that is ACTUALLY the one scrolling, so the progress bar had no
+   effect either. Pinning .app-shell to EXACTLY 100vh (not "at least") stops
+   it from ever growing past the viewport, which forces .app-main to become
+   the genuine scrolling region — which is what makes the sidebar visually
+   stay put (it is simply never part of anything that scrolls) and what
+   makes the progress bar's sticky positioning finally have a scrollport to
+   stick within. Reverted to normal document flow on mobile below, where a
+   different fix applies (see that media query's own note). */
+.app-shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  grid-template-rows: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ---------- Sidebar (desktop) / drawer (mobile) ---------- */
+
+.app-sidebar {
+  background: var(--color-nav-bg);
+  color: var(--color-ink-on-dark);
+  padding: var(--space-6) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  height: 100vh; /* pins the flex layout below so header/footer stay put and
+                    only .app-sidebar__scroll scrolls internally */
+  overflow: hidden;
+}
+
+.app-sidebar__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.app-sidebar__close {
+  display: none; /* shown only on mobile, see the media query below */
+  background: none;
+  border: none;
+  color: var(--color-ink-on-dark);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+  padding: var(--space-1);
+  margin: calc(-1 * var(--space-1));
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.app-sidebar__scroll {
+  flex: 1;
+  min-height: 0; /* required for a flex child to actually shrink and scroll,
+                    rather than being pushed to its content's full height */
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.app-sidebar__group-title {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #9fb4bd;
+  margin: 0 0 var(--space-2) var(--space-1);
+}
+
+.app-sidebar__footer {
+  flex-shrink: 0;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-nav-border);
+}
+
+/* NOTE (2026-09-25): originally a solid amber button reading "Contact" —
+   the user asked for this to be plain, visible text instead ("nie ma
+   potrzeby chowac tych informacji za zwyklym Contact" — no need to hide
+   this behind a generic "Contact" button): just the name and the email
+   address, stacked, still a mailto: link so it's one tap/click to email. */
+.app-sidebar__contact {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-2) var(--space-1);
+  color: var(--color-ink-on-dark);
+  text-decoration: none;
+}
+
+.app-sidebar__contact-name {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+}
+
+.app-sidebar__contact-email {
+  font-size: var(--font-size-xs);
+  color: #9fb4bd;
+}
+
+.app-sidebar__contact:hover .app-sidebar__contact-email {
+  color: var(--color-ink-on-dark);
+  text-decoration: underline;
+}
+
+.app-sidebar__brand {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--color-ink-on-dark);
+  text-decoration: none;
+}
+
+/* Wraps the logo icon and the "HAZEL" wordmark on one line, above the
+   subtitle (2026-09-23). A separate row rather than putting the icon
+   directly inline in .app-sidebar__brand: the subtitle span below is
+   display:block already, so it drops to its own line regardless — this
+   row only needs to align the icon and the word next to it. */
+.app-sidebar__brand-row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Sized in em so it tracks .app-sidebar__brand's own font-size rather than
+   a fixed pixel value — "roughly the height of the HAZEL wordmark beside
+   it" stays true even if that font-size ever changes. */
+.app-sidebar__brand-icon {
+  height: 1.15em;
+  width: auto;
+  display: block;
+}
+
+.app-sidebar__brand-sub {
+  display: block;
+  font-size: var(--font-size-xs);
+  font-weight: 400;
+  color: #aebfc7;
+  margin-top: var(--space-1);
+}
+
+.app-sidebar__nav {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.app-sidebar__link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  color: var(--color-ink-on-dark);
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  border-left: 3px solid transparent;
+}
+
+.app-sidebar__link:hover {
+  background: var(--color-nav-bg-active);
+}
+
+.app-sidebar__link[aria-current="page"] {
+  background: var(--color-nav-bg-active);
+  border-left-color: var(--color-accent);
+  font-weight: 600;
+}
+
+/* ---------- "Other tools" cards (2026-09-25) ----------
+   Links out to the author's other ADR/dangerous-goods apps. Styled as
+   small dark-theme cards (the sidebar itself is dark) rather than the blog
+   site's own card component, whose light-background styling would not
+   read correctly against .app-sidebar's navy background. */
+.app-sidebar__tools {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.tool-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  text-decoration: none;
+  color: var(--color-ink-on-dark);
+}
+
+.tool-card:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.tool-card__icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.85); /* visible placeholder while the
+    icon loads, and a safe backdrop if it fails to load at all (e.g. no
+    network on first offline visit — these icons are hosted on each app's
+    own domain, not bundled with HAZEL, so the service worker cannot
+    guarantee them offline) */
+}
+
+.tool-card__text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.tool-card__title {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.tool-card__desc {
+  font-size: var(--font-size-xs);
+  color: #c3d1d7;
+  margin-top: 1px;
+}
+
+.tool-card__note {
+  font-size: 0.7rem;
+  color: #93a8b1;
+  font-style: italic;
+  margin-top: 1px;
+}
+
+.tool-card__link {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-accent);
+  margin-top: var(--space-1);
+}
+
+/* Hamburger bar — hidden by default, shown only on mobile */
+.app-topbar {
+  display: none;
+}
+
+/* Matches .app-sidebar__brand-row's approach for the same reason, in the
+   mobile-only top bar (2026-09-23). Now a two-line block (2026-09-25): the
+   wordmark on its own row, plus a small spelled-out subtitle beneath it —
+   the same information the sidebar already carries, added here too so a
+   mobile visitor who never opens the drawer still sees what HAZEL stands
+   for. Kept deliberately small (font-size well under the sidebar's own
+   subtitle) so the topbar gains only a little height, not a second full
+   header — see the module-level goal of not covering more of a small
+   screen than necessary. */
+.app-topbar__brand {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.app-topbar__brand-row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 600;
+}
+
+.app-topbar__brand-sub {
+  font-size: 0.65rem;
+  text-transform: lowercase;
+  color: #aebfc7;
+  letter-spacing: 0.01em;
+}
+
+/* The logo, moved to the right of the top bar (2026-09-27) — see index.html's
+   note. Free of the wordmark's line-height now, so it gets a real fixed
+   height instead of the 1.1em it was capped to when it sat inline with the
+   text to its left. flex-shrink: 0 keeps it from being squeezed if the
+   brand text ever runs long on a very narrow phone. */
+.app-topbar__logo {
+  height: 2rem;
+  width: auto;
+  flex-shrink: 0;
+}
+
+/* Dimming layer behind the open drawer on mobile */
+.app-sidebar-scrim {
+  display: none;
+}
+
+/* ---------- Content area ---------- */
+
+.app-main {
+  padding: var(--space-6) var(--space-8);
+  overflow-y: auto;
+}
+
+/* ---------- Wizard progress bar ----------
+   NOTE (2026-09-25): moved from above the step content to below it (see
+   index.html) and made sticky to the bottom of .app-main. That worked, but
+   only when a step's content was tall enough to fill the screen — sticky
+   only pins an element to a scroll container's edge once scrolling has
+   actually reached that point; on a SHORT step (fewer fields), the content
+   ends well above the bottom of the screen, so the "sticky" bar just sat in
+   normal flow right after it — noticeably higher up than on a tall step,
+   i.e. exactly the "odkleja się i wędruje wyżej" jump the user reported
+   switching between steps.
+
+   NOTE (2026-09-26): switched from position: sticky to position: fixed,
+   anchored to the viewport itself rather than to any scroll container or
+   to where the step content happens to end. A fixed element's position
+   never depends on content height or scroll position, so it now sits in
+   exactly the same spot on every step, long or short — the jump is gone by
+   construction, not by tuning. This also gave the reworked "floating pill"
+   look its natural home: since the bar no longer needs to sit flush against
+   a content edge, it can float with its own margin, rounded corners, and a
+   translucent/blurred background, which reads as a modern floating toolbar
+   rather than a docked footer bar. left/right position the bar over
+   .app-main only (not over the sidebar) on desktop; the mobile media query
+   below spans it edge-to-edge instead, since the sidebar is an overlay
+   there, not a layout column. .wizard-container's padding-bottom (below)
+   reserves room so the fixed bar never covers the end of the step content.
+
+   NOTE (2026-09-26, later): Back/Next used to sit in normal page flow right
+   after the step content, separate from this bar — which meant a long
+   step's form pushed them below the fold, and reaching them meant scrolling
+   down even though the step indicator above was already fixed on screen.
+   They now live INSIDE this bar as its first and last flex children, so the
+   fixed positioning that already solved "which step am I on" for free also
+   solves "how do I move to the next one". .wizard-progress-bar is the outer
+   floating pill; .wizard-progress (nested below) is just the step-circles
+   row wizard.js renders into — it no longer carries any positioning of its
+   own, so wizard.js's innerHTML writes to it never touch the buttons either
+   side of it. */
+.wizard-progress-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  position: fixed;
+  left: var(--sidebar-width);
+  right: 0;
+  bottom: var(--space-4);
+  z-index: 15;
+  margin: 0 var(--space-6);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: rgba(var(--color-surface-rgb), 0.72);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(18, 36, 46, 0.08);
+  box-shadow: var(--shadow-float);
+}
+
+.wizard-progress {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1;
+  min-width: 0; /* lets the step labels truncate/hide instead of forcing the bar wider than the viewport */
+}
+
+/* Back/Next as they sit inside the floating bar — never allowed to shrink
+   away when the step list between them is tight for space, and pinned to a
+   fixed width so the whole bar doesn't visibly resize as "Back"'s width
+   changes between the 4-character word and nothing (it's hidden, not
+   removed, on the first step — see the disabled rule below). */
+.wizard-progress-bar__nav {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* The wizard already disables Back on step 1 and Next on the last step
+   (wizard.js) rather than hiding them — a button that vanishes and
+   reappears shifts everything beside it, which is exactly the kind of
+   layout jump this bar was redesigned to avoid. Dimming instead keeps the
+   bar's width and the step list's position constant throughout. */
+.wizard-progress-bar__nav:disabled {
+  opacity: 0.35;
+}
+
+.wizard-container {
+  /* Reserves room below the step content for the fixed floating progress
+     bar (above), now taller than before since it also carries the Back/Next
+     buttons — see that rule's note for why it is fixed rather than flowing
+     after the content the way it visually appears to. */
+  padding-bottom: 108px;
+}
+
+.wizard-progress__step {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1;
+}
+
+.wizard-progress__marker {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-data);
+  font-size: var(--font-size-xs);
+  color: var(--color-ink-muted);
+  background: var(--color-surface);
+  flex-shrink: 0;
+}
+
+.wizard-progress__step[data-state="active"] .wizard-progress__marker {
+  border-color: var(--color-accent);
+  color: var(--color-ink);
+  background: var(--color-accent);
+}
+
+.wizard-progress__step[data-state="done"] .wizard-progress__marker {
+  border-color: var(--color-success);
+  color: #fff;
+  background: var(--color-success);
+}
+
+.wizard-progress__label {
+  font-size: var(--font-size-sm);
+  color: var(--color-ink-muted);
+  white-space: nowrap;
+}
+
+.wizard-progress__step[data-state="active"] .wizard-progress__label {
+  color: var(--color-ink);
+  font-weight: 600;
+}
+
+.wizard-progress__connector {
+  flex: 1;
+  height: 2px;
+  background: var(--color-border);
+}
+
+/* ==========================================================================
+   RESPONSIVE: below the breakpoint the sidebar collapses behind a hamburger.
+   This is the only place where layout structure changes — the remaining
+   components (forms, cards, buttons) are fluid by nature and need no
+   separate mobile rules.
+   ========================================================================== */
+@media (max-width: 768px) {
+  .app-shell {
+    display: block; /* drop the grid; the sidebar becomes an overlay */
+    /* On mobile the sidebar is a fixed-position overlay drawer (below), not
+       a grid column, so .app-shell no longer needs to be locked to exactly
+       100vh the way the desktop layout does — undoing that here lets the
+       DOCUMENT itself scroll normally again, which is what the sticky
+       top bar and sticky progress bar both need: see the base .app-shell
+       rule's note for why a scroll container that never actually scrolls
+       breaks position:sticky for anything inside it. */
+    height: auto;
+    overflow: visible;
+  }
+
+  .app-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--color-nav-bg);
+    color: var(--color-ink-on-dark);
+    padding: var(--space-2) var(--space-4);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+
+  .app-topbar__hamburger {
+    background: none;
+    border: none;
+    color: var(--color-ink-on-dark);
+    font-size: var(--font-size-lg);
+    padding: var(--space-2);
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  .app-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 280px;
+    max-width: 85vw;
+    z-index: 30;
+    transform: translateX(-100%);
+    transition: transform 200ms ease-out;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.25);
+  }
+
+  .app-sidebar__close {
+    display: block;
+  }
+
+  /* Toggled from JS (see appShell.js) when the drawer opens */
+  .app-shell[data-drawer="open"] .app-sidebar {
+    transform: translateX(0);
+  }
+
+  .app-shell[data-drawer="open"] .app-sidebar-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(18, 36, 46, 0.45);
+    z-index: 25;
+  }
+
+  .app-main {
+    padding: var(--space-4);
+    /* Desktop makes .app-main the internal scroll container (overflow-y:
+       auto) so it can sit next to a pinned sidebar in the same viewport-high
+       grid row. Mobile has no grid row constraining .app-main's height, so
+       that overflow-y: auto never actually engages — same "dead scroll
+       container" problem as .app-shell used to have (see its note above) —
+       and the wizard progress bar's position: sticky; bottom: 0; has nothing
+       to stick within. Letting the document scroll instead (as it already
+       does for the sticky top bar) is what makes the progress bar stick on
+       mobile too. */
+    overflow-y: visible;
+  }
+
+  /* On a narrow screen show only the active step label, not all five —
+     otherwise the bar wraps and eats vertical space. */
+  .wizard-progress__label {
+    display: none;
+  }
+  .wizard-progress__step[data-state="active"] .wizard-progress__label {
+    display: block;
+  }
+
+  /* The desktop version insets the bar from the sidebar's own column
+     (left: var(--sidebar-width)) — on mobile the sidebar is an overlay, not
+     a column, so the bar spans the full width instead, with a smaller side
+     margin to match the narrower screen.
+
+     NOTE (2026-09-27): this used to keep the desktop's single flex row
+     (Back, step list, Next side by side) and just shrink the gaps/padding —
+     reported back as Back/Next actually overlapping the last couple of step
+     circles on a real phone. The step list's five circles and connectors
+     have their own minimum size and don't shrink to nothing the way
+     min-width: 0 suggests; on a narrow screen that minimum, plus two
+     buttons, is simply more than the available width, and a flex row has
+     nowhere else to put the overflow but on top of itself. Two grid rows
+     instead of one — buttons on top, step list on its own full-width row
+     below — as the user asked for after seeing it happen. Back and Next
+     each get half the top row, which incidentally also gives them a bigger,
+     easier mobile tap target than they had squeezed in with the circles. */
+  .wizard-progress-bar {
+    left: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "prev next"
+      "steps steps";
+    gap: var(--space-2);
+    margin: 0 var(--space-3);
+    bottom: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .wizard-progress-bar [data-wizard-prev] { grid-area: prev; }
+  .wizard-progress-bar [data-wizard-next] { grid-area: next; }
+  .wizard-progress-bar .wizard-progress { grid-area: steps; }
+
+  /* Centre each button's own label within its now-wider, stretched grid
+     cell, rather than leaving it hugging one edge. */
+  .wizard-progress-bar__nav {
+    justify-content: center;
+  }
+
+  .wizard-container {
+    padding-bottom: 118px;
+  }
+}

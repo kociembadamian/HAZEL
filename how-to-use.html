@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How to use HAZEL — step-by-step guide to chemical release modelling</title>
+  <meta name="description" content="A step-by-step guide to HAZEL, the open-source ALOHA alternative: location and time, choosing a chemical and thresholds, weather and stability, release sources (direct, puddle, tank), threat zones, fire and explosion, and indoor concentration." />
+  <!-- NOTE (2026-10-05): canonical / og:url now point at hazel-project.eu —
+       see the note in about.html. -->
+  <link rel="canonical" href="https://hazel-project.eu/how-to-use.html" />
+  <meta name="robots" content="index, follow" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://hazel-project.eu/how-to-use.html" />
+  <meta property="og:title" content="How to use HAZEL" />
+  <meta property="og:description" content="Step-by-step guide to modelling a chemical release with HAZEL." />
+  <meta property="og:image" content="https://hazel-project.eu/assets/hazel_logo.png" />
+  <meta name="theme-color" content="#31738d" />
+  <link rel="icon" href="assets/hazel_logo.png" type="image/png" />
+  <link rel="apple-touch-icon" href="assets/hazel_logo.png" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/site.css" />
+
+  <!-- The content marked data-app-content below is also shown inside the
+       app (pageSettings.js → staticPageLoader.js): this file is the single
+       source of the "How to use" text. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "How to model a hazardous chemical release with HAZEL",
+    "description": "Five steps from an incident to threat zones on a map.",
+    "tool": { "@type": "HowToTool", "name": "HAZEL (web browser, works offline)" },
+    "step": [
+      { "@type": "HowToStep", "position": 1, "name": "Location", "text": "Set where and when the release happens; the date and time give the sun's position, which drives atmospheric stability and puddle heating." },
+      { "@type": "HowToStep", "position": 2, "name": "Chemical", "text": "Search 3,148 substances by name or CAS number and choose the exposure thresholds (PAC-1, PAC-2, PAC-3) to draw." },
+      { "@type": "HowToStep", "position": 3, "name": "Weather", "text": "Enter wind, temperature, cloud cover, humidity, ground roughness and any inversion, or start from a preset." },
+      { "@type": "HowToStep", "position": 4, "name": "Source", "text": "Describe the release: a direct release, an evaporating puddle or a damaged tank. HAZEL computes the release rate and chooses the dispersion model." },
+      { "@type": "HowToStep", "position": 5, "name": "Results", "text": "Read the threat zones on the map, check the concentration at any point, export KML or a PDF report, and optionally model fire, explosion and indoor concentration." }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Top bar shown ONLY on mobile (see layout.css) -->
+  <header class="app-topbar">
+    <button class="app-topbar__hamburger" aria-label="Open menu" aria-expanded="false" aria-controls="app-sidebar">☰</button>
+    <span class="app-topbar__brand">
+      <span class="app-topbar__brand-row">HAZEL</span>
+      <span class="app-topbar__brand-sub">Hazardous Atmosphere Zoning for European Locations</span>
+    </span>
+    <img src="assets/hazel_logo.png" alt="" aria-hidden="true" class="app-topbar__logo" />
+  </header>
+
+  <div class="app-shell" data-drawer="closed">
+
+    <div class="app-sidebar-scrim"></div>
+
+    <nav class="app-sidebar" id="app-sidebar" aria-label="Main navigation">
+      <div class="app-sidebar__header">
+        <a class="app-sidebar__brand" href="https://hazel-project.eu/">
+          <span class="app-sidebar__brand-row">
+            <img src="assets/hazel_logo.png" alt="" aria-hidden="true" class="app-sidebar__brand-icon" />
+            HAZEL
+          </span>
+          <span class="app-sidebar__brand-sub">Hazardous Atmosphere Zoning for European Locations</span>
+        </a>
+        <button class="app-sidebar__close" aria-label="Close menu" type="button">✕</button>
+      </div>
+
+      <a class="app-sidebar__cta" href="https://lab.hazel-project.eu/" target="_blank" rel="noopener">Open HAZEL ↗</a>
+
+      <div class="app-sidebar__scroll">
+        <div class="app-sidebar__group">
+          <h2 class="app-sidebar__group-title">Project</h2>
+          <ul class="app-sidebar__nav">
+            <li><a class="app-sidebar__link" href="https://hazel-project.eu/">Home</a></li>
+            <li><a class="app-sidebar__link" href="how-to-use.html" aria-current="page">How to use</a></li>
+            <li><a class="app-sidebar__link" href="about.html">About</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="app-sidebar__footer">
+        <a class="app-sidebar__contact" href="mailto:damian@kocie.mba">
+          <span class="app-sidebar__contact-name">Damian Kociemba</span>
+          <span class="app-sidebar__contact-email">damian@kocie.mba</span>
+        </a>
+      </div>
+    </nav>
+
+    <main class="app-main">
+    <div class="page-container" data-app-content>
+
+      <div class="panel">
+        <div class="docs-placeholder">
+          <button type="button" class="btn btn--secondary" disabled aria-describedby="docs-placeholder-note-howto">Full documentation</button>
+          <p class="docs-placeholder__note" id="docs-placeholder-note-howto">
+            HAZEL is in beta and may still change, so at this stage we have
+            decided not to write full documentation. This page and
+            <a href="about.html">About</a> show where development stands and what the
+            current limitations are.
+          </p>
+        </div>
+
+        <h1>How to use HAZEL</h1>
+        <p>
+          Modelling a hazard in HAZEL (Hazardous Atmosphere Zoning for
+          European Locations) comes down to five steps: choosing the
+          <strong>location</strong> (1), the <strong>chemical</strong> (2),
+          setting the <strong>weather</strong> (3), describing the
+          <strong>source</strong> of the release (4) and reading the
+          <strong>results</strong> (5). This page guides you through the
+          parts that may need some explanation.
+        </p>
+      </div>
+
+      <div class="panel">
+        <h2>1. Location</h2>
+        <p>
+          Here you set where and when the incident happens — coordinates (or
+          a place search) and the date and time of the release. From the date
+          and time HAZEL calculates the sun's exact position in the sky for
+          that latitude. That value feeds two key parts of the physics:
+        </p>
+        <ul>
+          <li><strong>Atmospheric stability class (Pasquill–Gifford)</strong>
+            — daytime sunshine drives thermal convection and turbulence.
+            Strong midday sun creates rising currents and unstable air
+            (classes A–C), which dilutes the cloud faster. At night the ground
+            cools by radiation and stable layers form (classes E–F), in which
+            a dangerous gas can travel much further at high
+            concentration.</li>
+          <li><strong>Heat balance of the ground and of an evaporating
+            liquid</strong> — sunshine heats the ground and the surface of a
+            spilled liquid. A warmer liquid has a higher vapour pressure, so
+            it evaporates faster.</li>
+        </ul>
+        <p>
+          With the time of the incident set, HAZEL chooses the matching
+          dispersion and energy-balance parameters automatically, so the
+          simulation reflects the conditions at the scene as closely as the
+          model allows.
+        </p>
+      </div>
+
+      <div class="panel">
+        <h2>2. Chemical</h2>
+        <p>
+          Choose the substance to model. HAZEL's built-in database holds
+          3,148 substances and can be searched by name or by CAS number. Your
+          own entries from the Chemical library (with properties the
+          database lacks, or entirely new substances) appear in the search
+          too. The key terms shown for each substance:
+        </p>
+        <ul>
+          <li><strong>Name and formula</strong> — the official chemical name
+            and the molecular formula.</li>
+          <li><strong>CAS number (CAS Registry Number)</strong> — the unique
+            international identifier assigned by the Chemical Abstracts
+            Service. Searching by CAS number is the safest way to identify a
+            substance: it rules out confusion caused by trade names, common
+            names or language differences (for example 83-32-9 for
+            acenaphthene).</li>
+          <li><strong>Molar mass (M, g/mol)</strong> — the mass of one mole
+            of the substance. It sets how dense the gas is compared with air
+            (average molar mass about 28.97 g/mol). A gas heavier than air
+            may behave as a heavy gas — it slumps under gravity and spreads
+            sideways along the ground, which needs separate equations that
+            account for suppressed vertical mixing. Molar mass alone does
+            not decide this, however: the final choice between the
+            <em>Gaussian plume</em> and the <em>heavy gas</em> model is made
+            in the Source step, from the density of the cloud (including how
+            cold it is), the release rate and the wind. A small release of a
+            heavy gas can still disperse as a Gaussian plume, and a gas
+            lighter than air can behave as a heavy gas if it leaves the
+            source very cold.</li>
+          <li><strong>Exposure thresholds PAC-1, PAC-2, PAC-3 (Protective
+            Action Criteria)</strong> — airborne concentration thresholds
+            (in ppm or mg/m³) compiled by the U.S. Department of Energy for
+            emergency planning. PAC combines three recognised toxicological
+            standards (AEGL, ERPG and TEEL) into one three-tier hierarchy of
+            health effects for a 60-minute exposure:
+            <ul>
+              <li><strong>PAC-1</strong> — above this, the general population
+                may experience mild, transient discomfort, irritation or a
+                noticeable odour; the effects are not permanent and pass once
+                the person leaves the area;</li>
+              <li><strong>PAC-2</strong> — above this, serious or irreversible
+                health effects may occur, or symptoms that impair the ability
+                to escape (for example strong eye burning, shortness of
+                breath, disorientation);</li>
+              <li><strong>PAC-3</strong> — above this, there is a direct threat
+                to life or a risk of irreversible, often fatal, health
+                effects.</li>
+            </ul>
+            You can choose which of the three thresholds are drawn as zones.</li>
+        </ul>
+      </div>
+
+      <div class="panel">
+        <h2>3. Weather</h2>
+        <p>
+          Atmospheric conditions — above all wind speed and the stability of
+          the air — are key inputs to the dispersion model. They decide how
+          fast, how far and in which direction the cloud travels, and how
+          quickly it is diluted.
+        </p>
+
+        <h3>Ways to enter the weather</h3>
+        <ul>
+          <li><strong>Enter conditions manually</strong> — the default. Enter
+            any observed or hypothetical conditions. Works fully offline,
+            which makes it ideal for training, exercises and "what-if"
+            analyses (how a forecast change would alter the zones).</li>
+          <li><strong>Use current conditions</strong> — in the hosted public
+            version this shows "Not available — this installation has no
+            weather relay configured". It is switched off on purpose, for
+            security, for users' privacy and to avoid loading external API
+            servers. The <a href="https://github.com/kociembadamian/HAZEL" target="_blank" rel="noopener">project repository</a> and documentation contain full
+            instructions for setting up your own weather relay and
+            connecting HAZEL to a weather station or forecast API.</li>
+        </ul>
+
+        <h3>Quick presets</h3>
+        <p>To speed up work and compare extreme cases quickly, three presets are available:</p>
+        <ul>
+          <li><strong>Typical day</strong> — moderate wind (5 m/s), partly
+            cloudy, 15 °C, neutral stability.</li>
+          <li><strong>Worst case</strong> — the least favourable conditions
+            for safety: light wind (1.5 m/s), clear night, 5 °C, very stable
+            air and a low inversion (100 m). The gas disperses most slowly, so
+            the toxic zones reach furthest.</li>
+          <li><strong>Windy day</strong> — strong wind (10 m/s), overcast; the
+            cloud moves fast but is also mixed and diluted strongly.</li>
+        </ul>
+        <p class="field__hint">
+          Choosing a preset fills in all the fields. Changing any field
+          afterwards removes the preset's highlight, to show that your own
+          combination is now in use.
+        </p>
+
+        <h3>The inputs</h3>
+        <ul>
+          <li><strong>Wind speed</strong> — sets how fast the cloud travels.
+            Enter it in m/s, km/h, mph or knots.</li>
+          <li><strong>Wind blowing from</strong> — the direction the wind
+            comes <em>from</em> (degrees 0–360 or a compass point such as SW).
+            The cloud moves the opposite way (downwind): with a wind from the
+            south-west (225°) the zone extends towards the north-east
+            (45°).</li>
+          <li><strong>Measurement height</strong> — the height at which the
+            wind was measured; 10 m for standard weather stations and masts.
+            HAZEL uses it to work out the wind speed at the heights the
+            models need, taking ground roughness into account.</li>
+          <li><strong>Air temperature</strong> — in °C or °F. It affects the
+            heat balance of a puddle, the vapour pressure of an evaporating
+            substance and the density of the gas relative to air.</li>
+          <li><strong>Cloud cover</strong> — in oktas, from 0/8 (clear sky) to
+            8/8 (overcast). Together with the sun's elevation it determines
+            the stability class.</li>
+          <li><strong>Relative humidity</strong> — in %. It is used in the
+            heat balance of an evaporating puddle and in how much thermal
+            radiation from a fire the air absorbs. HAZEL does not model
+            reactions of a substance with moisture (see About).</li>
+          <li><strong>Time of day</strong> — Daytime or Night. If the
+            Location step has coordinates and a time, HAZEL calculates the
+            sun's elevation itself and <strong>ignores this switch</strong>,
+            to avoid a physical contradiction. To force a particular time of
+            day, change the time in the Location step.</li>
+          <li><strong>Ground roughness (z<sub>0</sub>)</strong> — how much the
+            ground slows the air:
+            <ul>
+              <li><strong>Open country</strong> (z<sub>0</sub> = 0.03 m) — flat
+                land, meadows, farmland without obstacles;</li>
+              <li><strong>Urban or forest</strong> (z<sub>0</sub> = 1.0 m) —
+                industrial areas, housing, dense forest; strong turbulence
+                near the ground and faster dispersion;</li>
+              <li><strong>Open water</strong> — roughness changes with wind
+                speed (waves);</li>
+              <li><strong>Custom value</strong> — enter z<sub>0</sub> for
+                specific terrain.</li>
+            </ul></li>
+          <li><strong>Low-level inversion</strong> — None or Present, with
+            its height. An inversion acts as a lid: warmer air above cooler
+            air stops the gas from mixing upwards and traps it near the
+            ground, which can raise concentrations far downwind
+            considerably. It is applied in the Gaussian model; a heavy gas
+            stays near the ground anyway.</li>
+        </ul>
+
+        <h3>Derived conditions</h3>
+        <p>As you type, the Derived conditions panel shows the values that will go into the calculation:</p>
+        <ul>
+          <li><strong>Stability class</strong> — the Pasquill–Gifford class
+            (for example D) worked out from wind speed, cloud cover and the
+            sun's elevation;</li>
+          <li><strong>Sun elevation</strong> — the sun's angle above the
+            horizon (for example 28.4°), when the Location step has a time;</li>
+          <li><strong>Wind speed</strong> in m/s and the wind direction;</li>
+          <li><strong>Cloud travels toward</strong> — the direction of the
+            cloud's movement (for example 45° NE for a wind from 225° SW);</li>
+          <li><strong>Temperature</strong> in kelvin (for example 288.15 K);</li>
+          <li><strong>Surface roughness</strong> and the
+            <strong>inversion</strong> height, if any.</li>
+        </ul>
+
+        <h3>Override stability class</h3>
+        <p>
+          By default the stability class is <strong>determined
+          automatically</strong>. You can also set a class from A to F
+          yourself:
+        </p>
+        <ul>
+          <li><strong>A</strong> — very unstable (strong vertical mixing,
+            sunny day, light wind);</li>
+          <li><strong>B</strong> — moderately unstable;</li>
+          <li><strong>C</strong> — slightly unstable;</li>
+          <li><strong>D</strong> — neutral (overcast day or night, or strong
+            wind);</li>
+          <li><strong>E</strong> — slightly stable (night, some cloud);</li>
+          <li><strong>F</strong> — very stable (clear night, light wind — the
+            worst case for dispersion).</li>
+        </ul>
+        <p>
+          Use the override only when you have better measurements from the
+          scene (for example a SODAR wind profiler or a weather station that
+          measures fluctuations in wind direction), or when comparing results
+          with another simulation program.
+        </p>
+      </div>
+
+      <div class="panel">
+        <h2>4. Source</h2>
+        <p>
+          The Source step describes how the dangerous substance gets into
+          the air. The release rate (in kg/s) and how long it lasts are
+          crucial: together with the weather, they decide the size and shape
+          of the threat zones on the map. This step also chooses the
+          dispersion model (Gaussian plume or heavy gas) from the computed
+          physical parameters. HAZEL offers three types of release:
+          <strong>Direct</strong>, <strong>Evaporating puddle</strong> and
+          <strong>Ruptured tank</strong>.
+        </p>
+
+        <h3>Type 1: Direct</h3>
+        <p>
+          Use this when the release rate is already known (from process
+          measurements or design data), or to see how sensitive the zones
+          are to an assumed rate.
+        </p>
+        <ul>
+          <li><strong>Release rate</strong> (kg/s) — the mass entering the air
+            each second.</li>
+          <li><strong>Duration</strong> (s) — how long the release lasts. The
+            dispersion model covers releases of up to one hour (3,600 s).
+            Short releases are handled as well: the cloud is then a moving
+            "puff" rather than a steady plume, and concentrations far
+            downwind are correspondingly lower.</li>
+          <li><strong>Source height</strong> (m) — the height of the release
+            point above the ground (a stack, a vent on a roof). The wind that
+            carries the plume is then taken at that height.</li>
+        </ul>
+        <div class="disclaimer-block">
+          <p>
+            <strong>Physical note:</strong> the source height is used only by
+            the Gaussian model. If the cloud is dense enough to be treated as
+            a heavy gas, HAZEL — following ALOHA's method — treats it as
+            released at ground level (0 m), since a heavy gas sinks quickly
+            anyway.
+          </p>
+        </div>
+
+        <h3>Computed source strength</h3>
+        <p>As soon as the inputs are complete, a summary panel shows:</p>
+        <ul>
+          <li><strong>Rate and amount</strong> — peak and average release rate,
+            total amount released and duration.</li>
+          <li><strong>Density ratio and Richardson number (Ri)</strong> — HAZEL
+            compares the density of the cloud with that of the air (for
+            example "12.6 times denser than air") and computes the
+            dimensionless Richardson number, which weighs gravity against
+            the mixing caused by the wind. Above the threshold of
+            <strong>1.95</strong> gravity wins: the cloud slumps and spreads
+            sideways along the ground, and HAZEL switches to its heavy-gas
+            calculation. (The ALOHA documentation states a threshold of 1;
+            with HAZEL's way of computing Ri, 1.95 reproduces ALOHA's own
+            choice of model in every comparison run.)</li>
+          <li><strong>Dispersion model</strong> — set to
+            <em>Automatic</em> by default, which applies the rule above. You
+            can force <em>Gaussian</em> or <em>Heavy Gas</em> instead, for
+            example to see a borderline case (Ri about 1.8–2.1) both ways, or
+            to compare with another tool that chose differently. Heavy Gas
+            cannot be forced for a cloud lighter than air. A forced choice
+            is stated in the banner on the Results page and in the PDF
+            report.</li>
+        </ul>
+
+        <h3>Type 2: Evaporating puddle</h3>
+        <p>
+          For a liquid spilled on the ground. The evaporation rate is not
+          constant: it falls over time because evaporation cools the liquid
+          (it draws heat from itself), lowering its temperature and vapour
+          pressure, while the ground, the air and the sun heat it again.
+        </p>
+        <ul>
+          <li><strong>Spilled mass</strong> (kg) — the total mass of liquid in
+            the puddle.</li>
+          <li><strong>Puddle area</strong> (m²) — the real area of the spill.
+            If it is confined by a bund, kerbs or a drip tray, enter the area
+            of that enclosure.</li>
+          <li><strong>Ground surface</strong> — Default soil, Concrete, Dry
+            sandy soil or Moist sandy soil. The ground is a source of heat for
+            the evaporating liquid; how well it conducts heat decides how fast
+            it warms the puddle and keeps evaporation going.</li>
+        </ul>
+        <p><strong>Properties that must be supplied.</strong> HAZEL's built-in
+          threshold database contains no thermodynamic data for liquids. If a
+          value is missing, HAZEL asks for it, with a small "?" button that
+          explains where to find it:</p>
+        <ul>
+          <li><strong>Liquid density</strong> (kg/m³) — CAMEO Chemicals
+            (Physical Properties → Specific Gravity × 1000) or the NIST
+            Chemistry WebBook.</li>
+          <li><strong>Liquid heat capacity</strong> (J/(kg·K)) — NIST
+            Chemistry WebBook (Condensed phase thermochemistry data).</li>
+          <li><strong>Boiling point</strong> (K) — CAMEO Chemicals or NIST
+            Chemistry WebBook (K = °C + 273.15).</li>
+          <li><strong>Heat of vaporisation</strong> (J/mol) — the
+            Δ<sub>vap</sub>H° value from the NIST Chemistry WebBook.
+            Important: use the value <em>at the boiling point</em>, not at
+            25 °C — the 25 °C value is higher and would make the estimated
+            evaporation too low.</li>
+        </ul>
+        <div class="disclaimer-block">
+          <p>
+            <strong>Why are some values not built in?</strong> Unlike the open
+            PAC database, sources such as CAMEO or NIST can have complex legal
+            and copyright status. To stay within the law, keep HAZEL fully
+            open source and protect the project from licensing claims, we do
+            not bundle external databases. Looking up a single value takes
+            less than a minute — a fair trade-off for a tool that is
+            independent and free. Values you enter once can be saved in the
+            Chemical library and are then filled in automatically.
+          </p>
+        </div>
+
+        <h3>Type 3: Ruptured tank</h3>
+        <p>
+          A release from a storage tank or tanker through a hole or a damaged
+          fitting. The physics of the release depends on what the tank holds
+          and on its geometry.
+        </p>
+        <p><strong>Vessel</strong></p>
+        <ul>
+          <li><strong>Contents</strong> — <em>Liquid, or gas liquefied under
+            pressure</em> (for example acetone, chlorine, ammonia, propane) or
+            <em>Gas only (compressed)</em> (for example carbon monoxide,
+            methane, hydrogen). HAZEL suggests the right choice from the
+            substance: a gas above its critical temperature cannot be held as
+            a liquid at any pressure.</li>
+          <li><strong>For a compressed gas:</strong> the <strong>tank
+            pressure</strong> (absolute, in atm — a gauge reading plus one
+            atmosphere), the gas's <strong>heat capacity ratio γ</strong>
+            (1.4 for CO, nitrogen, oxygen, hydrogen and air; about 1.3 for
+            methane) and, optionally, its <strong>critical temperature and
+            pressure</strong> (NIST Chemistry WebBook → Phase change data →
+            Tc, Pc). With them HAZEL corrects the tank's contents for
+            real-gas behaviour, which matters at high pressure (methane at
+            50 atm: about 11% more gas than an ideal gas). The acentric
+            factor ω can be left empty; HAZEL estimates it.</li>
+          <li><strong>Shape</strong> — horizontal cylinder, vertical cylinder
+            or sphere.</li>
+          <li><strong>Size and filling</strong> — diameter, length and how
+            full the tank is (%), from which HAZEL shows the capacity in m³
+            and litres.</li>
+        </ul>
+        <p><strong>Rupture</strong></p>
+        <ul>
+          <li><strong>Opening shape</strong> — circular or rectangular, with
+            its dimensions.</li>
+          <li><strong>Height above tank bottom</strong> (m) — a key parameter
+            for a liquid: the lower the opening, the greater the liquid head
+            above it and the more liquid escapes. Liquid below the bottom
+            edge of the opening cannot leave the tank. (Not needed for a
+            compressed gas.)</li>
+          <li><strong>Pipe or valve length</strong> (m) — 0 m means a hole in
+            the tank wall; values up to 0.10 m represent the resistance of a
+            short pipe or a damaged valve.</li>
+        </ul>
+        <p><strong>Where the liquid lands</strong> — only for liquids below
+          their boiling point (for example acetone, methanol, petrol), which
+          form a puddle that spreads and evaporates:</p>
+        <ul>
+          <li><strong>Maximum puddle area</strong> (m²) — the area limited by a
+            bund, kerb or the edge of a paved yard. If left empty, HAZEL
+            lets the liquid spread until it is 5 mm deep, which for a large
+            leak gives a very large evaporating surface.</li>
+          <li><strong>Ground surface</strong> — decides how much heat the
+            ground supplies to the puddle.</li>
+        </ul>
+        <p>
+          <strong>Two-phase release (gases liquefied under pressure).</strong>
+          A gas liquefied under pressure (chlorine, ammonia, propane) flashes
+          as it escapes: part of the liquid boils off instantly and the rest
+          is torn into fine droplets, forming a turbulent two-phase jet. As
+          in ALOHA, all of it is assumed to enter the air instead of partly
+          raining out to form a puddle — a deliberate overestimate. Whether
+          the resulting cloud is then modelled as a heavy gas depends on the
+          Richardson number; for ammonia, which is lighter than air, HAZEL
+          uses the Gaussian model (see About → Known simplifications).
+        </p>
+      </div>
+
+      <div class="panel">
+        <h2>5. Results</h2>
+        <p>
+          The Results step summarises the simulation. It shows the extent of
+          the toxic or fire hazard zones on an interactive map and in
+          numbers, lets you export reports, and gives access to two further
+          modules: fire and explosion if the release ignites, and indoor
+          concentration (shelter in place).
+        </p>
+
+        <h3>Threat zones on the map</h3>
+        <ul>
+          <li><strong>Model message</strong> — above the map, a short message
+            states which dispersion model is used and why: that the cloud is
+            lighter than air and cannot slump (Gaussian model); that it is
+            denser than air but the wind mixes it faster than gravity can act
+            (Ri below 1.95, Gaussian model); or that gravity dominates (Ri
+            above 1.95) and the cloud slumps and spreads along the ground
+            (heavy-gas model). If inputs are still missing, the message lists
+            what is needed instead.</li>
+          <li><strong>Moving the map</strong> — the map (Leaflet, with
+            OpenStreetMap tiles) is set up for phones: swiping with one
+            finger scrolls the page rather than the map. Zoom with the +/−
+            buttons, a double tap or a pinch; the mouse wheel does not
+            zoom.</li>
+          <li><strong>Concentration at a point</strong> — click anywhere on the
+            map to see the modelled concentration at exactly that point
+            (upwind of the source the model predicts no plume).</li>
+          <li><strong>Zone dimensions</strong> — below the map, each zone
+            (PAC-1, PAC-2, PAC-3) is described by two numbers: how far it
+            reaches <em>downwind</em> from the source, and how wide it is
+            <em>at its widest</em>.</li>
+          <li><strong>Levels</strong> — PAC-3 (threat to life), PAC-2 (serious
+            health effects, impaired ability to escape) and PAC-1 (mild,
+            transient effects).</li>
+        </ul>
+
+        <h3>Saving and exporting</h3>
+        <ul>
+          <li><strong>Save scenario</strong> — stores the complete scenario in
+            your browser's local storage on this device; nothing is sent to
+            any server. Clearing the browser's site data (not only cookies)
+            deletes saved scenarios — this also applies to the installed
+            app (PWA).</li>
+          <li><strong>Download KML</strong> — exports the zone outlines with
+            their coordinates for GIS software (QGIS, ArcGIS, Google
+            Earth).</li>
+          <li><strong>Download PDF report</strong> — a complete printable
+            document with the inputs, the results and the map.</li>
+        </ul>
+
+        <h3>Fire and explosion, if it ignites</h3>
+        <p>
+          This part answers the question: what happens if the released cloud
+          or pool ignites? Unlike a toxic cloud, which drifts with the wind,
+          these effects radiate or blast outwards from the source. Ticking
+          <strong>Consider ignition</strong> opens four scenarios:
+        </p>
+        <ul>
+          <li><strong>Fireball (BLEVE)</strong> — immediate ignition of a
+            pressurised tank that ruptures catastrophically. The whole mass
+            from the Source step is taken as the fireball mass.</li>
+          <li><strong>Vapour cloud explosion (VCE)</strong> — delayed ignition
+            of the dispersing flammable cloud, producing a blast wave. You
+            choose the fuel reactivity and how congested the site is, and
+            whether ignition is a high-energy detonation; the flammable mass
+            is taken from the dispersion calculation.</li>
+          <li><strong>Pool fire</strong> — liquid burning in a pool on the
+            ground; needs the pool diameter.</li>
+          <li><strong>Jet fire</strong> — a gas or liquid escaping from a
+            pressurised tank and burning as a standing flame (a torch); needs
+            the orifice diameter and the gas's heat capacity ratio.</li>
+        </ul>
+        <p class="field__hint">
+          All four need the substance's <strong>heat of combustion</strong>
+          (J/kg), which the threshold database does not include.
+        </p>
+
+        <h3>Indoor concentration — shelter in place</h3>
+        <p>
+          This module helps judge whether sheltering in place is better than
+          evacuating. It estimates how much toxic gas from a passing cloud
+          gets inside a nearby building. A reasonably tight building acts as
+          a slow filter: the indoor concentration rises and falls much more
+          slowly than the cloud outside and usually peaks lower (method after
+          Wilson and Sherman, as used by ALOHA).
+        </p>
+        <ul>
+          <li><strong>Downwind distance to the building</strong> (m) — measured
+            along the centreline of the cloud, where exposure is greatest.
+            You can take it from a point clicked on the map.</li>
+          <li><strong>Infiltration time constant</strong> — either
+            <em>Estimate from building parameters</em> or <em>I'll specify it
+            directly</em>, if the building's air exchange rate is known.</li>
+          <li><strong>Building floor area</strong> (m²) — the reference value
+            is 160 m², an average family house.</li>
+          <li><strong>Building height</strong> — single storey (2.5 m) or two
+            storeys (5 m).</li>
+          <li><strong>Exposure to wind</strong> — unsheltered (an isolated
+            building) or sheltered (surrounded by other buildings).</li>
+          <li><strong>Assumed indoor temperature</strong> (°C) — the
+            difference between indoor and outdoor temperature drives the
+            stack effect, which, together with the wind, is the main force
+            pushing air through gaps in the building.</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <footer class="static-footer">
+      HAZEL · free and open source ·
+      <a href="https://lab.hazel-project.eu/" target="_blank" rel="noopener">Open the app</a> ·
+      <a href="about.html">About</a> ·
+      <a href="mailto:damian@kocie.mba">damian@kocie.mba</a>
+    </footer>
+    </main>
+  </div>
+
+  <script src="js/site.js"></script>
+</body>
+</html>
