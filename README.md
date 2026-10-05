@@ -7,6 +7,9 @@ dangerous substance: toxic gas clouds, flammable clouds, fires and vapour cloud
 explosions. It runs entirely in a web browser, works offline once loaded, and
 needs no server, account or installation.
 
+<img width="1404" height="656" alt="Screenshot 2026-10-05 at 15 29 21" src="https://github.com/user-attachments/assets/0ad2c66f-7ef8-41df-8624-17d0c07f8d2e" />
+
+
 - Application: <https://lab.hazel-project.eu/>
 - Project site (overview, accuracy, sources): <https://hazel-project.eu/>
 - Contact: Damian Kociemba, <damian@kocie.mba>
